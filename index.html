@@ -11,14 +11,15 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="AVA 導航">
     <link rel="apple-touch-icon" href="./icon-512.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
     
     <!-- 🔄 防死記緩存 Meta 標籤 -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <!-- 🏷️ 正式升級為 v1.1.0 版本號，方便 Ivan 對看與管理 -->
-    <title>v1.1.0 | AVA 豐盛人生與財富守護導航系統</title>
+    <!-- 🏷️ 升級為 v1.2.0 版本號 -->
+    <title>v1.2.0 | AVA 豐盛人生與財富守護導航系統</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
@@ -44,25 +45,54 @@
 
         body { 
             font-family: 'Noto Sans TC', sans-serif; background: var(--bg); color: var(--text); 
-            margin: 0; padding: 0; padding-bottom: 90px; padding-top: 65px; 
+            margin: 0; padding: 0; padding-bottom: 90px; padding-top: 50px; /* 縮小頂部留白 */
             overscroll-behavior-y: none;
         }
 
-        /* 頂部 AVA 專業導航列 */
+        /* 🟢 頂部極簡縮小版導航列 */
         .app-header {
             position: fixed; top: 0; left: 0; right: 0;
             background-color: #0A3D91; color: white;
-            padding: 15px 20px; text-align: center;
-            padding-top: env(safe-area-inset-top, 15px); 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 1000;
-            display: flex; justify-content: space-between; align-items: center;
+            height: 50px; /* 高度大幅縮小，由原本的粗大變成精緻 */
+            padding: 0 15px;
+            padding-top: env(safe-area-inset-top, 0px); 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); z-index: 1000;
+            display: flex; align-items: center; justify-content: space-between;
         }
-        .app-title { font-size: 1.1rem; font-weight: 700; letter-spacing: 1px; margin: 0 auto; }
-        .app-version { font-size: 0.75rem; color: #a0c4ff; position: absolute; right: 20px; }
         
-        /* 當進入客戶報告模式時，隱藏底部導航、頂部Header並移除留白 */
+        /* Menu 三條線掣樣式 */
+        .menu-trigger {
+            font-size: 1.4rem; cursor: pointer; padding: 5px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        
+        .app-title { font-size: 0.95rem; font-weight: 700; letter-spacing: 0.5px; margin-left: 10px; flex: 1; }
+        
+        /* 🟢 側邊隱藏式選單 (Sidebar Menu) */
+        .sidebar-menu {
+            position: fixed; top: 0; left: -260px; width: 260px; height: 100%;
+            background: #ffffff; box-shadow: 4px 0 15px rgba(0,0,0,0.15);
+            z-index: 2500; transition: 0.3s ease; padding: 25px 20px;
+            display: flex; flex-direction: column;
+        }
+        .sidebar-menu.open { left: 0; }
+        
+        /* 側邊欄遮罩 */
+        .sidebar-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4); z-index: 2400; display: none;
+            backdrop-filter: blur(2px);
+        }
+        
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
+        .sidebar-brand { font-weight: 900; color: #0A3D91; font-size: 1.1rem; }
+        .sidebar-close { font-size: 1.4rem; cursor: pointer; color: #95a5a6; }
+        .sidebar-content { flex: 1; font-size: 0.9rem; font-weight: bold; line-height: 1.8; color: #4a5568; }
+        .sidebar-footer { font-size: 0.75rem; color: #95a5a6; border-top: 1px solid #eee; padding-top: 15px; }
+
+        /* 當進入客戶報告模式時，隱藏所有導航、Menu並移除底部留白 */
         body.client-view-mode { padding-bottom: 20px; padding-top: 20px; }
-        body.client-view-mode .bottom-nav, body.client-view-mode .app-header { display: none !important; }
+        body.client-view-mode .bottom-nav, body.client-view-mode .app-header, body.client-view-mode .sidebar-menu { display: none !important; }
         
         .container { max-width: 1000px; margin: 0 auto; padding: 15px; }
         
@@ -90,7 +120,6 @@
         h2.fd-title { color: var(--bank); }
         h2.medical-title { color: var(--medical); }
         
-        .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
         .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
         .input-group { display: flex; flex-direction: column; }
         .input-group label { font-weight: bold; font-size: 0.9rem; margin-bottom: 8px; color: #4a5568; }
@@ -146,11 +175,29 @@
 </head>
 <body>
 
-    <!-- 頂部 AVA 專業導航列 -->
+    <!-- 頂部縮小版導航列 -->
     <header class="app-header">
+        <div class="menu-trigger" id="open-menu">☰</div> <!-- 左上角 Menu 掣 -->
         <div class="app-title">AVA 豐盛導航系統</div>
-        <div class="app-version">v1.1.0</div>
     </header>
+
+    <!-- 側邊欄彈出選單 -->
+    <div class="sidebar-overlay" id="menu-overlay"></div>
+    <div class="sidebar-menu" id="side-menu">
+        <div class="sidebar-header">
+            <div class="sidebar-brand">AVA 系統資訊</div>
+            <div class="sidebar-close" id="close-menu">✕</div>
+        </div>
+        <div class="sidebar-content">
+            <p style="color: #0A3D91; margin-bottom: 15px;">📊 顧問簡介</p>
+            <p style="font-size: 0.85rem; color: #666; margin-bottom: 25px;">10年資深AIA agent - Ivan<br>專屬資產與醫療防線配置導航</p>
+            <p style="color: #8E44AD; margin-bottom: 10px;">⚙️ PWA 狀態</p>
+            <p style="font-size: 0.85rem; color: #2ecc71;">● 系統已支援離線可用</p>
+        </div>
+        <div class="sidebar-footer">
+            目前核心版本：v1.2.0
+        </div>
+    </div>
 
     <div class="container">
         
@@ -170,7 +217,6 @@
 
             <h2 class="saving-title">🌸 豐盛人生 ── 暖心現金流規劃</h2>
             
-            <!-- 關鍵手動輸入：在本金與方案上維持可用狀態，就算在報告模式下也是 -->
             <div class="input-grid">
                 <div class="input-group">
                     <label>輸入一筆過儲蓄本金 ($)</label>
@@ -283,7 +329,6 @@
 
             <h2 class="medical-title">🩺 退休醫保防線</h2>
             
-            <!-- 關鍵手動配置欄位開放，其餘輔助非核心設定在客戶模式自動隱藏 -->
             <div class="input-grid">
                 <div class="input-group">
                     <label>輸入醫保獨立本金 ($)</label>
@@ -367,7 +412,7 @@
             <div class="client-input-zone control-panel">
                 <div class="input-group">
                     <label style="color: var(--medical);">📝 客戶姓名 (將顯示於專屬報告中)</label>
-                    <input type="text" id="med-client-name" placeholder="例如：陳先生" style="border-color: var(--medical); text-align: center;">
+                    <input type="text" id="med-client-name" placeholder="example: 陳先生" style="border-color: var(--medical); text-align: center;">
                 </div>
                 <button class="btn btn-share open-share-btn">📲 點擊生成專屬分享連結與二維碼</button>
             </div>
@@ -413,6 +458,23 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             
+            // 🟢 Menu 側邊欄開關邏輯
+            const sideMenu = document.getElementById('side-menu');
+            const menuOverlay = document.getElementById('menu-overlay');
+            
+            document.getElementById('open-menu').addEventListener('click', () => {
+                sideMenu.classList.add('open');
+                menuOverlay.style.display = 'block';
+            });
+            
+            const closeMenuFunc = () => {
+                sideMenu.classList.remove('open');
+                menuOverlay.style.display = 'none';
+            };
+            
+            document.getElementById('close-menu').addEventListener('click', closeMenuFunc);
+            menuOverlay.addEventListener('click', closeMenuFunc);
+
             // 安全的導航列切換
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
@@ -508,13 +570,10 @@
                     document.getElementById('med-client-name').value = cName;
                     document.querySelectorAll('.client-display-name').forEach(el => el.innerText = cName);
                     
-                    // 顯示顧問專屬資訊名片
                     document.getElementById('saving-advisor-card').style.display = 'block';
                     document.getElementById('med-advisor-card').style.display = 'block';
                     
-                    // 進入客戶互動報告狀態：只隱藏後台控制台（如姓名輸入欄、分享按鈕區）
                     document.querySelectorAll('.client-input-zone, .btn-share').forEach(el => el.style.display = 'none');
-                    // 隱藏非核心的輔助設定，只露出本金、提取方案和退休年齡供互動
                     document.querySelectorAll('.hide-in-client, .control-panel').forEach(el => el.style.display = 'none');
                 }
                 
@@ -836,7 +895,6 @@
                     });
                 });
 
-                // 監聽 SW 更新：若偵測到 sw.js 版本改變，自動重新整理畫面確保顯示最新內容
                 let refreshing = false;
                 navigator.serviceWorker.addEventListener('controllerchange', () => {
                     if (!refreshing) {
