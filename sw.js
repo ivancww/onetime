@@ -1,50 +1,51 @@
-// 每次你更新了 index.html 的內容，請務必更改這個版本號！(例如改為 v1.0.2)
-const APP_VERSION = 'v1.1.0';
+// 🚀 正式同步升級為 v1.2.0！日後更新 index.html 時，記得將這裡的版本號一併累加（例如 v1.2.1）
+const APP_VERSION = 'v1.2.0';
 const CACHE_NAME = `ava-wealth-app-${APP_VERSION}`;
 
-// 這裡列出所有離線必須存在的檔案（請確保檔名完全正確）
+// 🚀 離線緩存完整清單，確保包含新加入的 icon-192.png
 const urlsToCache = [
   './',
   './index.html',
+  './icon-192.png',
   './icon-512.png',
   './manifest.json'
 ];
 
-// 1. 安裝階段：將檔案寫入離線緩存
+// 1. 安裝階段：將所有核心檔案秒速寫入手機快取
 self.addEventListener('install', event => {
-  self.skipWaiting(); // 【強制更新關鍵 1】強制立刻安裝，不等待舊版 SW 關閉
+  self.skipWaiting(); // 強制立刻激活新版 Service Worker，無需等待舊版 App 關閉
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('[SW] 緩存已建立:', CACHE_NAME);
+        console.log('[SW] 成功建立 v1.2.0 離線快取');
         return cache.addAll(urlsToCache);
       })
   );
 });
 
-// 2. 啟動階段：清除舊版本的垃圾緩存
+// 2. 啟動激活階段：清除舊版本的快取垃圾，釋放手機空間
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.map(cacheName => {
           if (cacheName !== CACHE_NAME) {
-            console.log('[SW] 刪除舊緩存:', cacheName);
+            console.log('[SW] 成功清理舊版本快取:', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
     })
   );
-  self.clients.claim(); // 【強制更新關鍵 2】新版 SW 立刻接管所有已打開的網頁
+  self.clients.claim(); // 讓新版 Service Worker 立刻全面掌控當前網頁
 });
 
-// 3. 攔截請求：實現離線可用 (Cache First 策略)
+// 3. 攔截請求：實現真正的離線可用 (Cache-First 策略)
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
       .then(response => {
-        // 如果緩存裡有這個檔案，直接秒速返回（離線可用）；沒有才去網絡抓取
+        // 快取有檔案就直接由手機本地秒開（離線可用）；無快取才會動用數據聯網抓取
         return response || fetch(event.request);
       })
   );
