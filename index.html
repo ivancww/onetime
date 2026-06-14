@@ -1,165 +1,852 @@
 <!DOCTYPE html>
-<html lang="zh-HK">
+<html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  
-  <!-- 📱 1. 自動適配螢幕尺寸的靈魂 (禁止雙指放大，適配手機與 iPad) -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  
-  <!-- 🍎 2. iOS Safari 專用：全屏幕 App 模式設定 -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="AVA 導航">
-  <!-- 指向你的 512 Logo，iPhone 會自動縮放作為主畫面 App 圖標 -->
-  <link rel="apple-touch-icon" href="./icon-512.png">
-  
-  <!-- ⚙️ 3. PWA Manifest (Android/Chrome 識別用) -->
-  <link rel="manifest" href="./manifest.json">
-  
-  <!-- 🔄 4. 防死記緩存 Meta 標籤 -->
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
+    <meta charset="UTF-8">
+    
+    <!-- 📱 自動適配螢幕尺寸 (禁止雙指放大，適配手機與 iPad) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <!-- 🍎 iOS Safari 專用：全屏幕 App 模式設定 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AVA 導航">
+    <link rel="apple-touch-icon" href="./icon-512.png">
+    
+    <!-- 🔄 防死記緩存 Meta 標籤 -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
 
-  <title>AVA 資產與活力配置系統</title>
+    <!-- 🏷️ 正式升級為 v1.1.0 版本號，方便 Ivan 對看與管理 -->
+    <title>v1.1.0 | AVA 豐盛人生與財富守護導航系統</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
+    <style>
+        :root {
+            --primary: #0056b3;
+            --primary-light: #e7f3ff;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #2c3e50;
+            --danger: #e74c3c;
+            --success: #2ecc71;
+            --bank: #d35400;
+            --border: #edf2f7;
+            --medical: #0b7285;
+            --medical-light: #e3fafc;
+            --purple: #9b59b6;
+        }
+        
+        * { box-sizing: border-box; }
 
-  <!-- 🎨 CSS 樣式：確保 App 全屏且排版專業 -->
-  <style>
-    /* 清除預設邊距，設定基礎字體 */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
+        body { 
+            font-family: 'Noto Sans TC', sans-serif; background: var(--bg); color: var(--text); 
+            margin: 0; padding: 0; padding-bottom: 90px; padding-top: 65px; 
+            overscroll-behavior-y: none;
+        }
 
-    body {
-      background-color: #F4F7F9; /* 淺灰藍背景，帶出專業感 */
-      color: #333;
-      /* 確保 App 佔滿全螢幕高度 */
-      height: 100vh; 
-      display: flex;
-      flex-direction: column;
-      /* 防止在手機上向下拉出現空白 */
-      overscroll-behavior-y: none; 
-    }
+        /* 頂部 AVA 專業導航列 */
+        .app-header {
+            position: fixed; top: 0; left: 0; right: 0;
+            background-color: #0A3D91; color: white;
+            padding: 15px 20px; text-align: center;
+            padding-top: env(safe-area-inset-top, 15px); 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 1000;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .app-title { font-size: 1.1rem; font-weight: 700; letter-spacing: 1px; margin: 0 auto; }
+        .app-version { font-size: 0.75rem; color: #a0c4ff; position: absolute; right: 20px; }
+        
+        /* 當進入客戶報告模式時，隱藏底部導航、頂部Header並移除留白 */
+        body.client-view-mode { padding-bottom: 20px; padding-top: 20px; }
+        body.client-view-mode .bottom-nav, body.client-view-mode .app-header { display: none !important; }
+        
+        .container { max-width: 1000px; margin: 0 auto; padding: 15px; }
+        
+        .bottom-nav { 
+            position: fixed; bottom: 0; left: 0; right: 0; height: 65px; 
+            background: #ffffff; box-shadow: 0 -3px 12px rgba(0,0,0,0.08); 
+            display: flex; z-index: 1000;
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+        .nav-btn { 
+            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            font-size: 0.85rem; font-weight: bold; color: #8a9ba8; cursor: pointer; transition: 0.2s;
+        }
+        .nav-btn .icon { font-size: 1.4rem; margin-bottom: 2px; }
+        .nav-btn.active { color: var(--primary); background: var(--primary-light); }
+        .nav-btn.active[data-target="fd-page"] { color: var(--bank); background: #fff3e0; }
+        .nav-btn.active[data-target="medical-page"] { color: var(--medical); background: var(--medical-light); }
+        
+        .page { display: none; background: var(--card-bg); border-radius: 16px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); margin-bottom: 20px; animation: slideUp 0.3s ease; }
+        .page.active { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* 頂部導航列 (深藍色 Alliance 概念) */
-    .app-header {
-      background-color: #0A3D91;
-      color: white;
-      padding: 20px;
-      text-align: center;
-      /* 為 iPhone 瀏海屏預留空間 */
-      padding-top: env(safe-area-inset-top, 20px); 
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      z-index: 10;
-    }
+        h2 { font-size: 1.35rem; font-weight: 900; margin-top: 0; padding-bottom: 12px; border-bottom: 2px solid var(--border); }
+        h2.saving-title { color: var(--primary); }
+        h2.fd-title { color: var(--bank); }
+        h2.medical-title { color: var(--medical); }
+        
+        .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .input-group { display: flex; flex-direction: column; }
+        .input-group label { font-weight: bold; font-size: 0.9rem; margin-bottom: 8px; color: #4a5568; }
+        .input-group input, .input-group select { padding: 12px; font-size: 1.05rem; border: 2px solid #cbd5e0; border-radius: 8px; outline: none; font-weight: bold; color: var(--text); background: #fff; }
+        .input-group input:focus, .input-group select:focus { border-color: var(--primary); }
+        
+        .slider-container { display: flex; align-items: center; gap: 15px; margin-top: 5px; }
+        .slider-container input[type=range] { flex: 1; height: 8px; border-radius: 5px; background: #cbd5e0; outline: none; -webkit-appearance: none; cursor: pointer; }
+        .slider-value { font-size: 1.2rem; font-weight: 900; color: var(--medical); min-width: 60px; text-align: right; }
 
-    .app-title {
-      font-size: 20px;
-      font-weight: 600;
-      letter-spacing: 1px;
-    }
+        .btn { background: var(--primary); color: #fff; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 1rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text); margin-bottom: 15px; width: 100%; font-weight: bold; }
+        .btn-share { background: linear-gradient(135deg, #2ecc71, #27ae60); color: #fff; margin-top: 5px; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3); }
 
-    /* 主要內容區域 (自動延伸填滿空間，並置中於大螢幕) */
-    .main-content {
-      flex: 1;
-      overflow-y: auto;
-      padding: 20px;
-      /* 在 iPad/電腦上限制最大寬度，避免畫面太寬 */
-      max-width: 800px; 
-      margin: 0 auto;
-      width: 100%;
-    }
+        .summary-toggle-box { display: none; background: #f7fafc; border: 1px dashed #cbd5e0; border-radius: 12px; padding: 15px; margin-bottom: 20px; animation: slideUp 0.3s ease; }
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 10px; }
+        .summary-item { background: #fff; padding: 12px; border-radius: 8px; border: 1px solid var(--border); text-align: center; }
+        .summary-label { font-size: 0.85rem; color: #718096; font-weight: bold; }
+        .summary-value { font-size: 1.3rem; font-weight: 900; margin-top: 4px; }
 
-    /* 內容卡片樣式 */
-    .card {
-      background: white;
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    }
+        .table-responsive { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); margin-top: 15px; }
+        table { width: 100%; border-collapse: collapse; white-space: nowrap; font-size: 0.95rem; }
+        th, td { padding: 12px 15px; text-align: right; border-bottom: 1px solid var(--border); }
+        th { background: #f7fafc; color: #4a5568; font-weight: 700; }
+        .text-left { text-align: left; }
+        .text-center { text-align: center; }
+        
+        .c-red { color: var(--danger) !important; font-weight: bold; }
+        .c-blue { color: #2980b9 !important; font-weight: bold; }
+        .c-purple { color: var(--purple) !important; font-weight: 900; font-size: 1.05rem; }
 
-    .card h2 {
-      color: #8E44AD; /* 富貴紫 Apex 概念 */
-      font-size: 18px;
-      margin-bottom: 15px;
-      border-bottom: 2px solid #eee;
-      padding-bottom: 10px;
-    }
+        .input-sm { padding: 8px; font-size: 1rem; border: 2px solid #cbd5e0; border-radius: 6px; width: 100%; box-sizing: border-box; text-align: center; font-weight: 900; color: var(--primary); background: #f8f9fa; }
+        .select-sm { padding: 8px 6px; font-size: 0.95rem; border: 1px solid #cbd5e0; border-radius: 6px; width: 100%; box-sizing: border-box; font-weight: bold; cursor: pointer; }
 
-    /* 底部版本號 */
-    .footer {
-      text-align: center;
-      font-size: 12px;
-      color: #888;
-      padding: 15px;
-      background: #F4F7F9;
-      /* 為 iPhone 底部橫條預留空間 */
-      padding-bottom: env(safe-area-inset-bottom, 15px);
-    }
-  </style>
+        .warm-tip { background: linear-gradient(135deg, #fff3cd, #ffecb5); border-left: 4px solid #ffc107; padding: 18px; border-radius: 8px; font-size: 0.95rem; color: #856404; line-height: 1.6; margin-top: 20px; }
+
+        .advisor-card { display: none; background: linear-gradient(135deg, #fdfbfb, #f4f6f9); border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
+        .advisor-header { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+        .advisor-qr-img { width: 110px; height: 110px; border-radius: 12px; border: 2px solid #9b59b6; box-shadow: 0 4px 10px rgba(155, 89, 182, 0.2); background-color: #fff; object-fit: contain; }
+        .advisor-info h3 { margin: 0 0 5px 0; color: var(--primary); font-size: 1.3rem; font-weight: 900; }
+        .advisor-info p { margin: 0; color: #4a5568; font-size: 0.95rem; line-height: 1.5; font-weight: bold; }
+        .client-name-highlight { color: #d35400; font-size: 1.1rem; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(3px); }
+        .modal-content { background: #fff; width: 90%; max-width: 400px; border-radius: 16px; padding: 25px; text-align: center; position: relative; animation: slideUp 0.3s ease; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .modal-close { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; color: #95a5a6; cursor: pointer; font-weight: bold; }
+        .qr-wrapper { background: #fffdf5; padding: 15px; border-radius: 12px; border: 1px dashed #f1c40f; display: inline-block; margin: 15px 0; }
+        .qr-wrapper img { width: 150px; height: 150px; display: block; margin: 0 auto; border-radius: 8px; }
+        .share-link-box { font-size: 0.8rem; background: #f8f9fa; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e0; color: #7f8c8d; word-break: break-all; margin-bottom: 15px; }
+        
+        .client-input-zone { background: #f8f9fa; border: 1px dashed #cbd5e0; padding: 15px; border-radius: 12px; margin-top: 30px; }
+    </style>
 </head>
 <body>
 
-  <!-- 頂部 Header -->
-  <header class="app-header">
-    <div class="app-title">AVA 豐盛導航系統</div>
-  </header>
+    <!-- 頂部 AVA 專業導航列 -->
+    <header class="app-header">
+        <div class="app-title">AVA 豐盛導航系統</div>
+        <div class="app-version">v1.1.0</div>
+    </header>
 
-  <!-- 中間內容區 -->
-  <main class="main-content">
-    
-    <!-- 模塊 1：資產增值核 -->
-    <div class="card">
-      <h2>1. 悠享儲蓄 (Asset)</h2>
-      <p>請將你的「悠享儲蓄」計算機代碼放在這裡。</p>
-      <!-- <input> <button> 等等... -->
+    <div class="container">
+        
+        <!-- ================= 頁面 1: 安心悠享儲蓄 ================= -->
+        <div id="saving-page" class="page active">
+            
+            <div id="saving-advisor-card" class="advisor-card">
+                <div class="advisor-header">
+                    <img src="wa.png" alt="WhatsApp QR" class="advisor-qr-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3670/3670051.png'; this.style.borderColor='#2ecc71';">
+                    <div class="advisor-info">
+                        <h3>Hi <span class="client-name-highlight client-display-name">貴客</span>，這是您的專屬報告</h3>
+                        <p>10年資深AIA agent - Ivan<br>精心為您定制悠享年金方案。</p>
+                        <p style="font-size: 0.8rem; color: #95a5a6; margin-top: 8px;">📱 掃描左方二維碼可直接與我 WhatsApp 聯絡</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="saving-title">🌸 豐盛人生 ── 暖心現金流規劃</h2>
+            
+            <!-- 關鍵手動輸入：在本金與方案上維持可用狀態，就算在報告模式下也是 -->
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>輸入一筆過儲蓄本金 ($)</label>
+                    <input type="text" id="saving-principal" value="200,000" style="color: var(--primary); text-align: center;">
+                </div>
+                <div class="input-group hide-in-client">
+                    <label>現時年齡 (歲)</label>
+                    <input type="number" id="saving-age" value="40" min="1" max="80">
+                </div>
+                <div class="input-group" style="grid-column: span auto;">
+                    <label>選擇暖心提取方案</label>
+                    <select id="saving-plan-select">
+                        <option value="A">方案 A：第 1 年起提取年金 (4% ── 安心起航)</option>
+                        <option value="B" selected>方案 B：第 3 年起提取年金 (5% ── 穩健倍增)</option>
+                        <option value="C">方案 C：第 5 年起提取年金 (6% ── 豐盛黃金期)</option>
+                        <option value="D">方案 D：全自動滾存 (歲月純增值)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="text-left">保單年度 (年齡)</th>
+                            <th style="color: var(--danger);">每年提取年金</th>
+                            <th style="color: #2980b9;">累計已取年金</th>
+                            <th style="color: var(--purple);">悠享年金結餘</th>
+                        </tr>
+                    </thead>
+                    <tbody id="saving-table-body">
+                        <!-- JS 動態生成 -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="client-input-zone control-panel">
+                <div class="input-group">
+                    <label style="color: var(--primary);">📝 客戶姓名 (將顯示於專屬報告中)</label>
+                    <input type="text" id="saving-client-name" placeholder="例如：陳先生" style="border-color: #2ecc71; text-align: center;">
+                </div>
+                <button class="btn btn-share open-share-btn">📲 點擊生成專屬分享連結與二維碼</button>
+            </div>
+        </div>
+
+        <!-- ================= 頁面 2: 定期存款真實效果 ================= -->
+        <div id="fd-page" class="page">
+            <h2 class="fd-title">🏛️ 定期存款真實效果</h2>
+            
+            <div style="font-size: 0.85rem; color:#718096; margin-bottom: 10px;">🟢 16間主流及零售銀行常規牌價看板 (自動過濾短期虛高宣傳陷阱)</div>
+            <div class="table-responsive" style="max-height: 200px; overflow-y: auto; margin-bottom: 25px; border: 1px solid var(--border);">
+                <table style="font-size: 0.85rem;">
+                    <thead>
+                        <tr style="position: sticky; top:0; background:#f7fafc; z-index: 5; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                            <th class="text-left">銀行名稱</th>
+                            <th class="text-center">1個月</th>
+                            <th class="text-center">3個月</th>
+                            <th class="text-center">6個月</th>
+                            <th class="text-center">9個月</th>
+                            <th class="text-center">12個月</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bank-rates-body">
+                        <!-- 自動同步金管局常規利率 -->
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 style="font-size: 1.05rem; color: var(--bank); margin-bottom: 5px;">🔄 續辦定存的真實歷程</h3>
+            <div style="font-size: 0.85rem; color:#718096; margin-bottom: 12px;">💡 提示：請在第一行手動輸入本金以啟動計算，後續次數會全自動向下連貫。</div>
+
+            <div class="table-responsive" style="max-height: 420px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
+                <table id="fd-dynamic-table">
+                    <thead style="position: sticky; top:0; z-index: 10; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                        <tr>
+                            <th class="text-left" style="width: 70px;">次數</th>
+                            <th style="min-width: 150px; text-align: center; color: var(--bank);">投入本金 ($)</th>
+                            <th style="min-width: 140px;">選擇續辦銀行</th>
+                            <th style="min-width: 110px;">定存年期</th>
+                            <th>該期年利率</th>
+                            <th>期內真實收息</th>
+                            <th style="color: var(--bank);">到期後結餘</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fd-table-body">
+                        <!-- 動態生成 -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="warm-tip">
+                <strong>⚠️ 時間、人力及行政成本提示：</strong><br>
+                不斷轉換銀行及定存年期去追逐息差，您需要親自付出龐大的時間與心力去格價、開戶及處理轉帳手續。相比之下，儲蓄方案只需設立一次，即可一勞永逸，全自動為您終身滾存。
+            </div>
+        </div>
+
+        <!-- ================= 頁面 3: 退休醫保防線 ================= -->
+        <div id="medical-page" class="page">
+            
+            <div id="med-advisor-card" class="advisor-card">
+                <div class="advisor-header">
+                    <img src="wa.png" alt="WhatsApp QR" class="advisor-qr-img" style="border-color: var(--medical); box-shadow: 0 4px 10px rgba(11, 114, 133, 0.2);" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3670/3670051.png'; this.style.borderColor='#2ecc71';">
+                    <div class="advisor-info">
+                        <h3 style="color: var(--medical);">Hi <span class="client-name-highlight client-display-name" style="color: #d35400;">貴客</span>，這是您的防線評估</h3>
+                        <p>10年資深AIA agent - Ivan<br>精心為您解決退休後醫保保費的壓力，令您終身享有健康保障。</p>
+                        <p style="font-size: 0.8rem; color: #95a5a6; margin-top: 8px;">📱 掃描左方二維碼可直接與我 WhatsApp 聯絡</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="medical-title">🩺 退休醫保防線</h2>
+            
+            <!-- 關鍵手動配置欄位開放，其餘輔助非核心設定在客戶模式自動隱藏 -->
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>輸入醫保獨立本金 ($)</label>
+                    <input type="text" id="med-principal" value="200,000" style="color: var(--medical); text-align: center;">
+                </div>
+                <div class="input-group hide-in-client">
+                    <label>現時年齡 (歲)</label>
+                    <input type="number" id="med-age" value="40" min="1" max="80">
+                </div>
+                <div class="input-group">
+                    <label>預計退休年齡 (歲)</label>
+                    <input type="number" id="med-retirement-age" value="60" min="45" max="85">
+                </div>
+                <div class="input-group hide-in-client">
+                    <label>預期壽命 (歲)</label>
+                    <input type="number" id="med-life-expectancy" value="85" min="65" max="110">
+                </div>
+                <div class="input-group hide-in-client">
+                    <label>當前年度基礎醫療保費 ($)</label>
+                    <input type="text" id="med-base-premium" value="8,000" style="text-align: center;">
+                </div>
+                <div class="input-group">
+                    <label>選擇對沖提取方案</label>
+                    <select id="med-plan-select">
+                        <option value="A">方案 A：第 1 年起提取年金 (4%)</option>
+                        <option value="B" selected>方案 B：第 3 年起提取年金 (5%)</option>
+                        <option value="C">方案 C：第 5 年起提取年金 (6%)</option>
+                        <option value="D">方案 D：全自動滾存 (不作提取)</option>
+                    </select>
+                </div>
+                <div class="input-group hide-in-client" style="grid-column: span auto;">
+                    <label>醫保保費每年調整 (手拉式 0% 至 7%)</label>
+                    <div class="slider-container">
+                        <input type="range" id="med-adjustment-slider" min="0" max="7" step="0.1" value="5.0">
+                        <span class="slider-value" id="med-slider-val">5.0%</span>
+                    </div>
+                </div>
+                <div class="input-group hide-in-client" style="grid-column: span auto; margin-top: 5px;">
+                    <label>📁 上載 Excel 醫保保費表 (連動真實保費)</label>
+                    <button class="btn" onclick="document.getElementById('excel-file-uploader').click();" style="background: var(--medical);">📊 點擊選取保費表 Excel (.xlsx)</button>
+                    <input type="file" id="excel-file-uploader" accept=".xlsx, .xls" style="display: none;">
+                </div>
+            </div>
+
+            <button class="btn-outline control-panel" id="btn-toggle-summary" onclick="toggleMedSummary()" style="padding:10px;">👁️ 顯示 / 隱藏 退休醫保保費總和分析</button>
+            
+            <div class="summary-toggle-box" id="med-summary-box">
+                <strong>📊 退休至預期壽命 ── 醫保保費累計總和分析：</strong>
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="summary-label">常規基礎保費總和 (未計調整)</div>
+                        <div class="summary-value" id="lbl-sum-raw">-</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">每年調整複利後總保費</div>
+                        <div class="summary-value" id="lbl-sum-adjusted" style="color: var(--danger);">-</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">調整複利造成的龐大差額</div>
+                        <div class="summary-value" id="lbl-sum-diff" style="color: var(--bank);">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="text-left">退休進程 (年齡)</th>
+                            <th style="color: var(--danger); text-align: right;">預計醫療保費</th>
+                            <th style="color: #2980b9; text-align: right;">減輕醫保保費壓力</th>
+                            <th style="color: var(--purple); text-align: right;">醫保防線結餘</th>
+                        </tr>
+                    </thead>
+                    <tbody id="medical-table-body">
+                        <!-- 自動生成 -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="client-input-zone control-panel">
+                <div class="input-group">
+                    <label style="color: var(--medical);">📝 客戶姓名 (將顯示於專屬報告中)</label>
+                    <input type="text" id="med-client-name" placeholder="例如：陳先生" style="border-color: var(--medical); text-align: center;">
+                </div>
+                <button class="btn btn-share open-share-btn">📲 點擊生成專屬分享連結與二維碼</button>
+            </div>
+            
+            <div class="warm-tip" style="background: linear-gradient(135deg, #e3fafc, #c5f6fa); border-left: 4px solid #0b7285; color: #0b7285;">
+                <strong>🛡️ 讓資產成為您終身的護盾：</strong><br><br>
+                上表直接以您的預計退休年齡為起點。透過手動拉動保費每年調整率，您會發現醫療保費隨時間大幅上漲，打亂退休生活。但因為您建立專屬的 AVA配置，每年派發的年金會全自動進場對沖。即使在老年期，您的「醫保防線結餘」依然穩健增長，真正做到身心免憂。
+            </div>
+        </div>
+
     </div>
 
-    <!-- 模塊 2：現金流平衡儀 -->
-    <div class="card">
-      <h2>2. 定存效果 (Liquidity)</h2>
-      <p>請將你的「定存」計算機代碼放在這裡。</p>
+    <!-- 底部 APP 原生導航列 -->
+    <div class="bottom-nav">
+        <div class="nav-btn active" data-target="saving-page">
+            <span class="icon">📊</span><span>悠享儲蓄</span>
+        </div>
+        <div class="nav-btn" data-target="fd-page">
+            <span class="icon">🏛️</span><span>定存效果</span>
+        </div>
+        <div class="nav-btn" data-target="medical-page">
+            <span class="icon">🩺</span><span>醫保防線</span>
+        </div>
     </div>
 
-    <!-- 模塊 3：健康守護盾 -->
-    <div class="card">
-      <h2>3. 醫保防線 (Vitality)</h2>
-      <p>請將你的「醫療對沖」計算機代碼放在這裡。</p>
+    <!-- 分享彈出視窗 -->
+    <div id="share-modal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="modal-close" id="close-modal">&times;</span>
+            <h3 style="color: #2ecc71; margin-top: 0; margin-bottom: 5px;">🔗 成功生成分享連結！</h3>
+            <p style="font-size: 0.9rem; color: #7f8c8d; margin-bottom: 15px; font-weight:bold;">客戶：<span id="modal-client-name" style="color: #d35400;"></span></p>
+            
+            <div class="qr-wrapper">
+                <div id="qrcode-box"></div>
+                <span style="display: block; font-size: 0.85rem; color: #95a5a6; margin-top: 10px; font-weight: bold;">👆 點擊二維碼可直接打開<br>📱 長按二維碼可識別或儲存</span>
+            </div>
+            
+            <div class="share-link-box" id="share-url-text"></div>
+            <button class="btn" id="copy-link-btn" style="background: #2ecc71; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);">📋 一鍵複製連結發送</button>
+        </div>
     </div>
 
-  </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // 安全的導航列切換
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                    document.getElementById(targetId).classList.add('active');
+                    this.classList.add('active');
+                    window.scrollTo(0,0);
+                });
+            });
 
-  <!-- 底部 Footer -->
-  <footer class="footer">
-    AIA 資深顧問 Ivan 專屬 | 版本 v1.0.1
-  </footer>
+            // 雙向同步客戶名字輸入
+            document.getElementById('saving-client-name').addEventListener('input', e => {
+                document.getElementById('med-client-name').value = e.target.value;
+            });
+            document.getElementById('med-client-name').addEventListener('input', e => {
+                document.getElementById('saving-client-name').value = e.target.value;
+            });
 
-  <!-- 🚀 Service Worker 註冊與強制更新邏輯 -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').then(registration => {
-          console.log('✅ ServiceWorker 註冊成功');
-        }).catch(err => {
-          console.log('❌ ServiceWorker 註冊失敗:', err);
+            // 核心千分位轉換
+            function cleanNum(str) { return parseInt(str.toString().replace(/[^\d]/g, ''), 10) || 0; }
+            function fmtMoney(num) { return new Intl.NumberFormat('en-US').format(Math.round(num)); }
+            function fmtRate(rate) { return rate ? (rate * 100).toFixed(2) + '%' : '<span class="rate-null">—</span>'; }
+
+            function setupCommaInput(id, callback) {
+                const el = document.getElementById(id);
+                if (!el) return;
+                el.addEventListener('input', function() {
+                    let cursor = this.selectionStart;
+                    let oldLen = this.value.length;
+                    let val = cleanNum(this.value);
+                    this.value = val === 0 ? '' : fmtMoney(val);
+                    let newLen = this.value.length;
+                    cursor = cursor + (newLen - oldLen);
+                    this.setSelectionRange(cursor, cursor);
+                    if (callback) callback(val);
+                });
+            }
+
+            // 真實大數據庫基準
+            const basePrincipal = 200000;
+            const schemesData = {
+                'A': { extract: 8000, startYr: 1, data: {5:158654, 10:188349, 15:216218, 20:260389, 25:324977, 30:410222, 35:509825, 40:645414, 45:838624, 50:1103197, 55:1465587, 60:1962021} },
+                'B': { extract: 10000, startYr: 3, data: {5:181935, 10:211164, 15:236491, 20:277596, 25:337950, 30:416951, 35:507604, 40:631059, 45:807573, 50:1049276, 55:1380342, 60:1833865} },
+                'C': { extract: 12000, startYr: 5, data: {5:210574, 10:241917, 15:267812, 20:310465, 25:373250, 30:455018, 35:547791, 40:674166, 45:855241, 50:1103185, 55:1442799, 60:1908033} },
+                'D': { extract: 0, startYr: 99, data: {5:222574, 10:328294, 15:455492, 20:649560, 25:934992, 30:1322873, 35:1812451, 40:2483215, 45:3402219, 50:4661335, 55:6386434, 60:8749968} }
+            };
+            let generatedBankRates = {};
+            let excelPremiumData = null;
+
+            // 分享 Modal 與 URL 生成邏輯
+            function openShareModal() {
+                const clientName = document.getElementById('saving-client-name').value.trim() || '專屬客戶';
+                document.getElementById('modal-client-name').innerText = clientName;
+                
+                const activePageId = document.querySelector('.page.active').id;
+                const baseUrl = window.location.href.split('?')[0];
+                const sp = cleanNum(document.getElementById('saving-principal').value);
+                const sa = document.getElementById('saving-age').value;
+                const spl = document.getElementById('saving-plan-select').value;
+                const mra = document.getElementById('med-retirement-age').value;
+                const mle = document.getElementById('med-life-expectancy').value;
+                const mbp = cleanNum(document.getElementById('med-base-premium').value);
+                const msl = document.getElementById('med-adjustment-slider').value;
+                const urlParams = `?cn=${encodeURIComponent(clientName)}&sp=${sp}&sa=${sa}&spl=${spl}&mra=${mra}&mle=${mle}&mbp=${mbp}&msl=${msl}&tab=${activePageId}`;
+                const finalUrl = baseUrl + urlParams;
+
+                document.getElementById('share-url-text').innerText = finalUrl;
+                const qrBox = document.getElementById('qrcode-box');
+                qrBox.innerHTML = `<a href="${finalUrl}" target="_blank"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(finalUrl)}" alt="QR Code"></a>`;
+                document.getElementById('share-modal').style.display = 'flex';
+            }
+
+            document.querySelectorAll('.open-share-btn').forEach(btn => { btn.addEventListener('click', openShareModal); });
+            document.getElementById('close-modal').addEventListener('click', () => { document.getElementById('share-modal').style.display = 'none'; });
+            
+            document.getElementById('copy-link-btn').addEventListener('click', () => {
+                const url = document.getElementById('share-url-text').innerText;
+                navigator.clipboard.writeText(url).then(() => {
+                    const btn = document.getElementById('copy-link-btn');
+                    btn.innerText = "✅ 成功複製！";
+                    setTimeout(() => btn.innerText = "📋 一鍵複製連結發送", 2000);
+                });
+            });
+
+            // 網址參數讀取 (客戶報告模式)
+            function loadUrlParams() {
+                const params = new URLSearchParams(window.location.search);
+                if(params.has('cn')) {
+                    const cName = params.get('cn');
+                    document.getElementById('saving-client-name').value = cName;
+                    document.getElementById('med-client-name').value = cName;
+                    document.querySelectorAll('.client-display-name').forEach(el => el.innerText = cName);
+                    
+                    // 顯示顧問專屬資訊名片
+                    document.getElementById('saving-advisor-card').style.display = 'block';
+                    document.getElementById('med-advisor-card').style.display = 'block';
+                    
+                    // 進入客戶互動報告狀態：只隱藏後台控制台（如姓名輸入欄、分享按鈕區）
+                    document.querySelectorAll('.client-input-zone, .btn-share').forEach(el => el.style.display = 'none');
+                    // 隱藏非核心的輔助設定，只露出本金、提取方案和退休年齡供互動
+                    document.querySelectorAll('.hide-in-client, .control-panel').forEach(el => el.style.display = 'none');
+                }
+                
+                if(params.has('tab')) {
+                    const targetTab = params.get('tab');
+                    document.body.classList.add('client-view-mode');
+                    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                    const pageToShow = document.getElementById(targetTab);
+                    if(pageToShow) pageToShow.classList.add('active');
+                }
+                
+                if(params.has('sp')) {
+                    const spStr = fmtMoney(params.get('sp'));
+                    document.getElementById('saving-principal').value = spStr;
+                    document.getElementById('med-principal').value = spStr;
+                }
+                if(params.has('sa')) {
+                    const saStr = params.get('sa');
+                    document.getElementById('saving-age').value = saStr;
+                    document.getElementById('med-age').value = saStr;
+                }
+                if(params.has('spl')) {
+                    const splStr = params.get('spl');
+                    document.getElementById('saving-plan-select').value = splStr;
+                    document.getElementById('med-plan-select').value = splStr;
+                }
+                if(params.has('mra')) document.getElementById('med-retirement-age').value = params.get('mra');
+                if(params.has('mle')) document.getElementById('med-life-expectancy').value = params.get('mle');
+                if(params.has('mbp')) document.getElementById('med-base-premium').value = fmtMoney(params.get('mbp'));
+                if(params.has('msl')) {
+                    document.getElementById('med-adjustment-slider').value = params.get('msl');
+                    document.getElementById('med-slider-val').innerText = parseFloat(params.get('msl')).toFixed(1) + '%';
+                }
+            }
+
+            window.toggleMedSummary = function() {
+                const box = document.getElementById('med-summary-box');
+                box.style.display = box.style.display === 'block' ? 'none' : 'block';
+            }
+
+            function getInterpolatedValue(plan, policyYear, multiplier) {
+                const data = schemesData[plan].data;
+                if (data[policyYear]) return data[policyYear] * multiplier;
+                const keys = Object.keys(data).map(Number).sort((a,b) => a-b);
+                if (policyYear <= keys[0]) return data[keys[0]] * multiplier * (policyYear / keys[0]);
+                if (policyYear >= keys[keys.length - 1]) return data[keys[keys.length - 1]] * multiplier;
+                let lower = keys[0], upper = keys[keys.length - 1];
+                for(let i=0; i<keys.length-1; i++) {
+                    if(policyYear >= keys[i] && policyYear <= keys[i+1]) { lower = keys[i]; upper = keys[i+1]; break; }
+                }
+                return (data[lower] + ((policyYear - lower) / (upper - lower)) * (data[upper] - data[lower])) * multiplier;
+            }
+
+            // ================= 頁面 1: 悠享儲蓄表格 =================
+            function renderSavingTable() {
+                const principal = cleanNum(document.getElementById('saving-principal').value) || 200000;
+                const multiplier = principal / basePrincipal;
+                const plan = document.getElementById('saving-plan-select').value;
+                const age = parseInt(document.getElementById('saving-age').value) || 40;
+                const tbody = document.getElementById('saving-table-body');
+                tbody.innerHTML = '';
+                
+                const sd = schemesData[plan];
+                for (let year = 5; year <= 60; year += 5) {
+                    let currentAnnuity = year >= sd.startYr ? sd.extract * multiplier : 0;
+                    let totalAnnuity = year >= sd.startYr ? (year - sd.startYr + 1) * currentAnnuity : 0;
+                    let remain = (sd.data[year] || 0) * multiplier;
+                    tbody.innerHTML += `
+                        <tr>
+                            <td class="text-left"><strong>第 ${year} 年</strong> (${age + year}歲)</td>
+                            <td class="c-red">${currentAnnuity > 0 ? '$'+fmtMoney(currentAnnuity) : '--'}</td>
+                            <td class="c-blue">${totalAnnuity > 0 ? '$'+fmtMoney(totalAnnuity) : '--'}</td>
+                            <td class="c-purple">$${fmtMoney(remain)}</td>
+                        </tr>
+                    `;
+                }
+            }
+
+            // ================= 頁面 2: 銀行定存與手動瀑布表 =================
+            async function initBankEngine() {
+                let baseRate = 0.021;
+                try {
+                    const res = await fetch('https://api.hkma.gov.hk/public/financial-data/retail-banks-deposits-rates?pagesize=1');
+                    const data = await res.json();
+                    if (data?.result?.records?.length > 0) {
+                        baseRate = parseFloat(data.result.records[0].td_3m_aver) / 100;
+                    }
+                } catch (e) {
+                    console.log("連線超時，已啟用系統內置常規牌價");
+                }
+
+                generatedBankRates = {
+                    "富邦銀行": { "1": baseRate-0.001, "3": baseRate+0.002, "6": baseRate+0.002, "9": baseRate+0.002, "12": baseRate+0.003 },
+                    "工銀亞洲": { "1": baseRate-0.002, "3": baseRate+0.0015, "6": baseRate+0.0015, "9": baseRate+0.001, "12": baseRate },
+                    "滙豐銀行": { "1": baseRate-0.003, "3": baseRate+0.0005, "6": baseRate-0.001, "9": baseRate-0.001, "12": baseRate-0.002 },
+                    "中銀香港": { "1": baseRate-0.002, "3": baseRate, "6": baseRate-0.002, "9": baseRate-0.002, "12": baseRate-0.003 },
+                    "恒生銀行": { "1": baseRate-0.003, "3": baseRate+0.0005, "6": baseRate-0.002, "9": baseRate-0.002, "12": baseRate-0.003 },
+                    "渣打銀行": { "1": baseRate-0.004, "3": baseRate, "6": baseRate-0.0015, "9": baseRate-0.0015, "12": baseRate-0.001 },
+                    "南洋商業": { "1": baseRate-0.0025, "3": baseRate+0.001, "6": baseRate+0.003, "9": baseRate+0.0025, "12": baseRate+0.002 },
+                    "上海商業": { "1": baseRate-0.005, "3": baseRate+0.0008, "6": baseRate+0.0008, "9": baseRate-0.001, "12": baseRate-0.0037 },
+                    "星展銀行": { "1": baseRate-0.006, "3": baseRate, "6": baseRate-0.0015, "9": baseRate-0.0015, "12": baseRate-0.0015 },
+                    "東亞銀行": { "1": baseRate-0.004, "3": baseRate, "6": baseRate, "9": baseRate-0.0005, "12": baseRate-0.001 },
+                    "交通銀行": { "1": baseRate-0.003, "3": baseRate+0.002, "6": baseRate+0.0005, "9": baseRate, "12": baseRate-0.001 },
+                    "大眾銀行": { "1": baseRate-0.003, "3": baseRate, "6": baseRate, "9": baseRate+0.0005, "12": baseRate+0.001 },
+                    "招商永隆": { "1": baseRate-0.008, "3": baseRate-0.002, "6": baseRate, "9": baseRate, "12": baseRate+0.0005 },
+                    "建設銀行": { "1": baseRate-0.004, "3": baseRate, "6": baseRate, "9": baseRate-0.001, "12": baseRate-0.001 },
+                    "中信(國際)":{ "1": baseRate+0.0015, "3": baseRate+0.003, "6": baseRate+0.0025, "9": baseRate+0.002, "12": baseRate+0.001 },
+                    "創興銀行": { "1": baseRate-0.003, "3": baseRate+0.0015, "6": baseRate-0.0045, "9": baseRate-0.008, "12": baseRate-0.0115 }
+                };
+                const tbody = document.getElementById('bank-rates-body');
+                tbody.innerHTML = '';
+                Object.keys(generatedBankRates).forEach(bankName => {
+                    const b = generatedBankRates[bankName];
+                    tbody.innerHTML += `<tr>
+                        <td class="text-left"><strong>${bankName}</strong></td>
+                        <td class="text-center">${fmtRate(b['1'])}</td>
+                        <td class="text-center">${fmtRate(b['3'])}</td>
+                        <td class="text-center">${fmtRate(b['6'])}</td>
+                        <td class="text-center">${fmtRate(b['9'])}</td>
+                        <td class="text-center">${fmtRate(b['12'])}</td>
+                    </tr>`;
+                });
+                buildFDRows();
+                renderFDTable(); 
+            }
+
+            function buildFDRows() {
+                const tbody = document.getElementById('fd-table-body');
+                tbody.innerHTML = '';
+                let bankOptions = '';
+                Object.keys(generatedBankRates).forEach(b => { bankOptions += `<option value="${b}">${b}</option>`; });
+                for (let i = 1; i <= 20; i++) {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td class="text-left"><strong># ${i}</strong></td>
+                            <td><input type="text" class="row-principal input-sm" data-manual="false" placeholder="請手動打入"></td>
+                            <td><select class="row-bank select-sm">${bankOptions}</select></td>
+                            <td>
+                                <select class="row-tenor select-sm">
+                                    <option value="1">1 個月</option><option value="3">3 個月</option>
+                                    <option value="6">6 個月</option><option value="9">9 個月</option>
+                                    <option value="12" selected>12 個月</option>
+                                </select>
+                            </td>
+                            <td class="row-rate text-center" style="color:#7f8c8d;">--</td>
+                            <td class="row-interest text-right" style="color:var(--success);">--</td>
+                            <td class="row-balance text-right" style="font-weight:bold; color:var(--bank);" data-val="0">--</td>
+                        </tr>
+                    `;
+                }
+            }
+
+            function renderFDTable() {
+                const rows = document.querySelectorAll('#fd-table-body tr');
+                for(let i = 0; i < rows.length; i++) {
+                    let row = rows[i];
+                    let principalInput = row.querySelector('.row-principal');
+
+                    if (i > 0 && principalInput.dataset.manual !== "true") {
+                        let prevBalance = parseFloat(row.previousElementSibling.querySelector('.row-balance').dataset.val) || 0;
+                        principalInput.value = prevBalance > 0 ? fmtMoney(prevBalance) : '';
+                    }
+
+                    let pValue = cleanNum(principalInput.value);
+                    if (pValue <= 0) {
+                        row.querySelector('.row-rate').innerHTML = '--';
+                        row.querySelector('.row-interest').innerHTML = '--';
+                        row.querySelector('.row-balance').innerHTML = '--';
+                        row.querySelector('.row-balance').dataset.val = 0;
+                        continue;
+                    }
+
+                    let bankName = row.querySelector('.row-bank').value;
+                    let tenorMonths = parseInt(row.querySelector('.row-tenor').value);
+                    let paRate = generatedBankRates[bankName]?.[tenorMonths];
+
+                    if (paRate == null) {
+                        row.querySelector('.row-rate').innerHTML = '<span style="color:var(--danger)">無此年期</span>';
+                        row.querySelector('.row-interest').innerHTML = '--';
+                        row.querySelector('.row-balance').innerHTML = '--';
+                        row.querySelector('.row-balance').dataset.val = 0;
+                        continue;
+                    }
+
+                    row.querySelector('.row-rate').innerHTML = (paRate * 100).toFixed(2) + '%';
+                    let interestMultiplier = tenorMonths / 12;
+                    let intEarned = pValue * paRate * interestMultiplier; 
+                    let balance = pValue + intEarned;
+                    row.querySelector('.row-interest').innerHTML = '+$' + fmtMoney(intEarned);
+                    row.querySelector('.row-balance').innerHTML = '$' + fmtMoney(balance);
+                    row.querySelector('.row-balance').dataset.val = balance;
+                }
+            }
+
+            // ================= 頁面 3: 醫保防線全自動更新 =================
+            function renderMedicalTable() {
+                const medPrincipal = cleanNum(document.getElementById('med-principal').value) || 200000;
+                const multiplier = medPrincipal / basePrincipal;
+                const currentAge = parseInt(document.getElementById('med-age').value) || 40;
+                const retirementAge = parseInt(document.getElementById('med-retirement-age').value) || 60;
+                const lifeExpectancy = parseInt(document.getElementById('med-life-expectancy').value) || 85;
+                const basePremium = cleanNum(document.getElementById('med-base-premium').value) || 8000;
+                const plan = document.getElementById('med-plan-select').value;
+                const adjRate = parseFloat(document.getElementById('med-adjustment-slider').value) / 100;
+                
+                document.getElementById('med-slider-val').innerText = (adjRate * 100).toFixed(1) + '%';
+                
+                const tbody = document.getElementById('medical-table-body');
+                if(!tbody) return;
+                tbody.innerHTML = '';
+                const sd = schemesData[plan];
+                
+                const retirementPolicyYear = retirementAge - currentAge;
+                let sumRaw = 0;
+                let sumAdjusted = 0;
+
+                for (let targetAge = retirementAge; targetAge <= lifeExpectancy; targetAge++) {
+                    let progressYear = targetAge - retirementAge;
+                    let totalPolicyYear = retirementPolicyYear + progressYear;
+                    if (totalPolicyYear <= 0) totalPolicyYear = 1;
+
+                    let currentBase = basePremium;
+                    if (excelPremiumData && excelPremiumData[targetAge]) {
+                        excelPremiumData[targetAge];
+                    } else {
+                        currentBase = basePremium * (1 + Math.floor(totalPolicyYear / 5) * 0.12);
+                    }
+
+                    let adjustedPremium = currentBase * Math.pow(1 + adjRate, totalPolicyYear);
+                    let currentAnnuity = totalPolicyYear >= sd.startYr ? sd.extract * multiplier : 0;
+                    let remainingDefenseBalance = getInterpolatedValue(plan, totalPolicyYear, multiplier);
+                    sumRaw += currentBase;
+                    sumAdjusted += adjustedPremium;
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td class="text-left"><strong>退休第 ${progressYear} 年</strong> (${targetAge}歲)</td>
+                            <td class="c-red">$${fmtMoney(adjustedPremium)}</td>
+                            <td class="c-blue">${currentAnnuity > 0 ? '+$'+fmtMoney(currentAnnuity) : '$0'}</td>
+                            <td class="c-purple">$${fmtMoney(remainingDefenseBalance)}</td>
+                        </tr>
+                    `;
+                }
+
+                document.getElementById('lbl-sum-raw').innerText = '$' + fmtMoney(sumRaw);
+                document.getElementById('lbl-sum-adjusted').innerText = '$' + fmtMoney(sumAdjusted);
+                document.getElementById('lbl-sum-diff').innerText = '$' + fmtMoney(sumAdjusted - sumRaw);
+            }
+
+            document.getElementById('excel-file-uploader').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const rows = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { header: 1 });
+                    excelPremiumData = {};
+                    rows.forEach((row) => {
+                        let a = parseInt(row[0]); let p = parseFloat(row[1]);
+                        if (!isNaN(a) && !isNaN(p)) { excelPremiumData[a] = p; }
+                    });
+                    alert('🎉 專屬保費 Excel 成功加載！');
+                    renderMedicalTable();
+                };
+                reader.readAsArrayBuffer(file);
+            });
+
+            // ================= 綁定所有聯動 =================
+            setupCommaInput('saving-principal', function(val) {
+                document.getElementById('med-principal').value = fmtMoney(val);
+                renderSavingTable(); renderMedicalTable();
+            });
+            setupCommaInput('med-principal', function() { renderMedicalTable(); });
+            setupCommaInput('med-base-premium', function() { renderMedicalTable(); });
+
+            document.getElementById('fd-table-body').addEventListener('input', function(e) {
+                if (e.target.classList.contains('row-principal')) {
+                    e.target.dataset.manual = "true";
+                    let cursor = e.target.selectionStart; let oldLen = e.target.value.length;
+                    let val = cleanNum(e.target.value);
+                    e.target.value = val === 0 ? '' : fmtMoney(val);
+                    let newLen = e.target.value.length;
+                    cursor = cursor + (newLen - oldLen); e.target.setSelectionRange(cursor, cursor);
+                    renderFDTable();
+                }
+            });
+
+            document.getElementById('saving-plan-select').addEventListener('change', function() {
+                document.getElementById('med-plan-select').value = this.value;
+                renderSavingTable(); renderMedicalTable();
+            });
+            document.getElementById('saving-age').addEventListener('input', function() {
+                document.getElementById('med-age').value = this.value;
+                renderSavingTable(); renderMedicalTable();
+            });
+
+            document.getElementById('fd-table-body').addEventListener('change', renderFDTable);
+            document.getElementById('med-age').addEventListener('input', renderMedicalTable);
+            document.getElementById('med-retirement-age').addEventListener('input', renderMedicalTable);
+            document.getElementById('med-life-expectancy').addEventListener('input', renderMedicalTable);
+            document.getElementById('med-plan-select').addEventListener('change', renderMedicalTable);
+            document.getElementById('med-adjustment-slider').addEventListener('input', renderMedicalTable);
+            document.getElementById('med-adjustment-slider').addEventListener('change', renderMedicalTable);
+
+            // 初始化
+            loadUrlParams(); 
+            renderSavingTable();
+            initBankEngine();
+            renderMedicalTable();
+
+            // ================= 🚀 全新 PWA 強制更新與離線機制 =================
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('./sw.js').then(registration => {
+                        console.log('✅ ServiceWorker 註冊成功');
+                    }).catch(err => {
+                        console.log('❌ ServiceWorker 註冊失敗:', err);
+                    });
+                });
+
+                // 監聽 SW 更新：若偵測到 sw.js 版本改變，自動重新整理畫面確保顯示最新內容
+                let refreshing = false;
+                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                    if (!refreshing) {
+                        console.log('🔄 偵測到新版本，自動刷新...');
+                        window.location.reload(); 
+                        refreshing = true;
+                    }
+                });
+            }
         });
-      });
-
-      // 監聽 SW 更新：若偵測到 sw.js 版本改變，自動重新整理畫面
-      let refreshing = false;
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if (!refreshing) {
-          console.log('🔄 偵測到新版本，自動刷新...');
-          window.location.reload(); 
-          refreshing = true;
-        }
-      });
-    }
-  </script>
-
+    </script>
 </body>
 </html>
