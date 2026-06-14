@@ -1,21 +1,24 @@
 {
-  "name": "豐盛人生財富導航",
-  "short_name": "豐盛人生",
-  "start_url": "index.html",
+  "name": "AVA 資產與活力配置系統",
+  "short_name": "AVA 豐盛導航",
+  "description": "專為高淨值客戶打造的資產與醫療防線配置導航系統",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#f8f9fa",
-  "theme-color": "#0056b3",
-  "orientation": "portrait",
+  "background_color": "#FFFFFF",
+  "theme_color": "#0A3D91",
   "icons": [
     {
       "src": "icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "maskable"
     }
-  ]
+  ],
+  "version": "1.2.0"
 }
