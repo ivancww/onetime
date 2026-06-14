@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  
+  <!-- 📱 1. 自動適配螢幕尺寸的靈魂 (禁止雙指放大，適配手機與 iPad) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  
+  <!-- 🍎 2. iOS Safari 專用：全屏幕 App 模式設定 -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="AVA 導航">
+  <!-- 指向你的 512 Logo，iPhone 會自動縮放作為主畫面 App 圖標 -->
+  <link rel="apple-touch-icon" href="./icon-512.png">
+  
+  <!-- ⚙️ 3. PWA Manifest (Android/Chrome 識別用) -->
+  <link rel="manifest" href="./manifest.json">
+  
+  <!-- 🔄 4. 防死記緩存 Meta 標籤 -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
+  <title>AVA 資產與活力配置系統</title>
+
+  <!-- 🎨 CSS 樣式：確保 App 全屏且排版專業 -->
+  <style>
+    /* 清除預設邊距，設定基礎字體 */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: #F4F7F9; /* 淺灰藍背景，帶出專業感 */
+      color: #333;
+      /* 確保 App 佔滿全螢幕高度 */
+      height: 100vh; 
+      display: flex;
+      flex-direction: column;
+      /* 防止在手機上向下拉出現空白 */
+      overscroll-behavior-y: none; 
+    }
+
+    /* 頂部導航列 (深藍色 Alliance 概念) */
+    .app-header {
+      background-color: #0A3D91;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      /* 為 iPhone 瀏海屏預留空間 */
+      padding-top: env(safe-area-inset-top, 20px); 
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      z-index: 10;
+    }
+
+    .app-title {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    /* 主要內容區域 (自動延伸填滿空間，並置中於大螢幕) */
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      /* 在 iPad/電腦上限制最大寬度，避免畫面太寬 */
+      max-width: 800px; 
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* 內容卡片樣式 */
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+
+    .card h2 {
+      color: #8E44AD; /* 富貴紫 Apex 概念 */
+      font-size: 18px;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 10px;
+    }
+
+    /* 底部版本號 */
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #888;
+      padding: 15px;
+      background: #F4F7F9;
+      /* 為 iPhone 底部橫條預留空間 */
+      padding-bottom: env(safe-area-inset-bottom, 15px);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 頂部 Header -->
+  <header class="app-header">
+    <div class="app-title">AVA 豐盛導航系統</div>
+  </header>
+
+  <!-- 中間內容區 -->
+  <main class="main-content">
+    
+    <!-- 模塊 1：資產增值核 -->
+    <div class="card">
+      <h2>1. 悠享儲蓄 (Asset)</h2>
+      <p>請將你的「悠享儲蓄」計算機代碼放在這裡。</p>
+      <!-- <input> <button> 等等... -->
+    </div>
+
+    <!-- 模塊 2：現金流平衡儀 -->
+    <div class="card">
+      <h2>2. 定存效果 (Liquidity)</h2>
+      <p>請將你的「定存」計算機代碼放在這裡。</p>
+    </div>
+
+    <!-- 模塊 3：健康守護盾 -->
+    <div class="card">
+      <h2>3. 醫保防線 (Vitality)</h2>
+      <p>請將你的「醫療對沖」計算機代碼放在這裡。</p>
+    </div>
+
+  </main>
+
+  <!-- 底部 Footer -->
+  <footer class="footer">
+    AIA 資深顧問 Ivan 專屬 | 版本 v1.0.1
+  </footer>
+
+  <!-- 🚀 Service Worker 註冊與強制更新邏輯 -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').then(registration => {
+          console.log('✅ ServiceWorker 註冊成功');
+        }).catch(err => {
+          console.log('❌ ServiceWorker 註冊失敗:', err);
+        });
+      });
+
+      // 監聽 SW 更新：若偵測到 sw.js 版本改變，自動重新整理畫面
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          console.log('🔄 偵測到新版本，自動刷新...');
+          window.location.reload(); 
+          refreshing = true;
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>
