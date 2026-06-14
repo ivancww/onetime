@@ -18,8 +18,8 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <!-- 🏷️ 升級為 v1.2.0 版本號 -->
-    <title>v1.2.0 | AVA 豐盛人生與財富守護導航系統</title>
+    <!-- 🏷️ 升級為 v1.3.0 版本號 -->
+    <title>v1.3.0 | AVA 豐盛人生與財富守護導航系統</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
@@ -45,71 +45,26 @@
 
         body { 
             font-family: 'Noto Sans TC', sans-serif; background: var(--bg); color: var(--text); 
-            margin: 0; padding: 0; padding-bottom: 90px; padding-top: 50px; /* 縮小頂部留白 */
+            margin: 0; padding: 0; padding-bottom: 50px; padding-top: 50px; 
             overscroll-behavior-y: none;
         }
 
-        /* 🟢 頂部極簡縮小版導航列 */
+        /* 頂部極簡極窄導航列 (已移走 Menu ☰ 掣) */
         .app-header {
             position: fixed; top: 0; left: 0; right: 0;
             background-color: #0A3D91; color: white;
-            height: 50px; /* 高度大幅縮小，由原本的粗大變成精緻 */
-            padding: 0 15px;
+            height: 50px; padding: 0 20px;
             padding-top: env(safe-area-inset-top, 0px); 
             box-shadow: 0 2px 8px rgba(0,0,0,0.1); z-index: 1000;
-            display: flex; align-items: center; justify-content: space-between;
-        }
-        
-        /* Menu 三條線掣樣式 */
-        .menu-trigger {
-            font-size: 1.4rem; cursor: pointer; padding: 5px;
             display: flex; align-items: center; justify-content: center;
         }
-        
-        .app-title { font-size: 0.95rem; font-weight: 700; letter-spacing: 0.5px; margin-left: 10px; flex: 1; }
-        
-        /* 🟢 側邊隱藏式選單 (Sidebar Menu) */
-        .sidebar-menu {
-            position: fixed; top: 0; left: -260px; width: 260px; height: 100%;
-            background: #ffffff; box-shadow: 4px 0 15px rgba(0,0,0,0.15);
-            z-index: 2500; transition: 0.3s ease; padding: 25px 20px;
-            display: flex; flex-direction: column;
-        }
-        .sidebar-menu.open { left: 0; }
-        
-        /* 側邊欄遮罩 */
-        .sidebar-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4); z-index: 2400; display: none;
-            backdrop-filter: blur(2px);
-        }
-        
-        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
-        .sidebar-brand { font-weight: 900; color: #0A3D91; font-size: 1.1rem; }
-        .sidebar-close { font-size: 1.4rem; cursor: pointer; color: #95a5a6; }
-        .sidebar-content { flex: 1; font-size: 0.9rem; font-weight: bold; line-height: 1.8; color: #4a5568; }
-        .sidebar-footer { font-size: 0.75rem; color: #95a5a6; border-top: 1px solid #eee; padding-top: 15px; }
+        .app-title { font-size: 0.95rem; font-weight: 700; letter-spacing: 0.5px; text-align: center; }
 
-        /* 當進入客戶報告模式時，隱藏所有導航、Menu並移除底部留白 */
+        /* 當進入客戶報告模式時，隱藏底部導航、頂部Header並移除留白 */
         body.client-view-mode { padding-bottom: 20px; padding-top: 20px; }
-        body.client-view-mode .bottom-nav, body.client-view-mode .app-header, body.client-view-mode .sidebar-menu { display: none !important; }
+        body.client-view-mode .bottom-nav, body.client-view-mode .app-header, body.client-view-mode .nav-toggle-bar { display: none !important; }
         
         .container { max-width: 1000px; margin: 0 auto; padding: 15px; }
-        
-        .bottom-nav { 
-            position: fixed; bottom: 0; left: 0; right: 0; height: 65px; 
-            background: #ffffff; box-shadow: 0 -3px 12px rgba(0,0,0,0.08); 
-            display: flex; z-index: 1000;
-            padding-bottom: env(safe-area-inset-bottom, 0px);
-        }
-        .nav-btn { 
-            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            font-size: 0.85rem; font-weight: bold; color: #8a9ba8; cursor: pointer; transition: 0.2s;
-        }
-        .nav-btn .icon { font-size: 1.4rem; margin-bottom: 2px; }
-        .nav-btn.active { color: var(--primary); background: var(--primary-light); }
-        .nav-btn.active[data-target="fd-page"] { color: var(--bank); background: #fff3e0; }
-        .nav-btn.active[data-target="medical-page"] { color: var(--medical); background: var(--medical-light); }
         
         .page { display: none; background: var(--card-bg); border-radius: 16px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); margin-bottom: 20px; animation: slideUp 0.3s ease; }
         .page.active { display: block; }
@@ -171,33 +126,45 @@
         .share-link-box { font-size: 0.8rem; background: #f8f9fa; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e0; color: #7f8c8d; word-break: break-all; margin-bottom: 15px; }
         
         .client-input-zone { background: #f8f9fa; border: 1px dashed #cbd5e0; padding: 15px; border-radius: 12px; margin-top: 30px; }
+
+        /* 🟢 底部預設隱藏、點擊彈出導航列設計 */
+        .nav-toggle-bar {
+            position: fixed; bottom: 0; left: 0; right: 0; height: 35px;
+            background: #0A3D91; color: white; text-align: center; line-height: 35px;
+            font-size: 0.8rem; font-weight: bold; cursor: pointer; z-index: 1499;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1); letter-spacing: 1px;
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+            transition: 0.3s ease;
+        }
+        
+        .bottom-nav { 
+            position: fixed; bottom: -85px; left: 0; right: 0; height: 75px; 
+            background: #ffffff; box-shadow: 0 -5px 20px rgba(0,0,0,0.15); 
+            display: flex; z-index: 1500; transition: transform 0.3s cubic-bezier(0.1, 0.7, 0.1, 1);
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+        
+        /* 當導航列被喚醒彈出時的樣式 */
+        .bottom-nav.show {
+            transform: translateY(-85px);
+        }
+        
+        .nav-btn { 
+            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            font-size: 0.85rem; font-weight: bold; color: #8a9ba8; cursor: pointer; transition: 0.2s;
+        }
+        .nav-btn .icon { font-size: 1.4rem; margin-bottom: 2px; }
+        .nav-btn.active { color: var(--primary); background: var(--primary-light); }
+        .nav-btn.active[data-target="fd-page"] { color: var(--bank); background: #fff3e0; }
+        .nav-btn.active[data-target="medical-page"] { color: var(--medical); background: var(--medical-light); }
     </style>
 </head>
 <body>
 
-    <!-- 頂部縮小版導航列 -->
+    <!-- 頂部精緻窄版導航列 -->
     <header class="app-header">
-        <div class="menu-trigger" id="open-menu">☰</div> <!-- 左上角 Menu 掣 -->
         <div class="app-title">AVA 豐盛導航系統</div>
     </header>
-
-    <!-- 側邊欄彈出選單 -->
-    <div class="sidebar-overlay" id="menu-overlay"></div>
-    <div class="sidebar-menu" id="side-menu">
-        <div class="sidebar-header">
-            <div class="sidebar-brand">AVA 系統資訊</div>
-            <div class="sidebar-close" id="close-menu">✕</div>
-        </div>
-        <div class="sidebar-content">
-            <p style="color: #0A3D91; margin-bottom: 15px;">📊 顧問簡介</p>
-            <p style="font-size: 0.85rem; color: #666; margin-bottom: 25px;">10年資深AIA agent - Ivan<br>專屬資產與醫療防線配置導航</p>
-            <p style="color: #8E44AD; margin-bottom: 10px;">⚙️ PWA 狀態</p>
-            <p style="font-size: 0.85rem; color: #2ecc71;">● 系統已支援離線可用</p>
-        </div>
-        <div class="sidebar-footer">
-            目前核心版本：v1.2.0
-        </div>
-    </div>
 
     <div class="container">
         
@@ -209,7 +176,7 @@
                     <img src="wa.png" alt="WhatsApp QR" class="advisor-qr-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3670/3670051.png'; this.style.borderColor='#2ecc71';">
                     <div class="advisor-info">
                         <h3>Hi <span class="client-name-highlight client-display-name">貴客</span>，這是您的專屬報告</h3>
-                        <p>10年資深AIA agent - Ivan<br>精心為您定制悠享年金方案。</p>
+                        <p>10年資深AIA agent - Ivan<br>精心為您定制悠享年年金方案方案。</p>
                         <p style="font-size: 0.8rem; color: #95a5a6; margin-top: 8px;">📱 掃描左方二維碼可直接與我 WhatsApp 聯絡</p>
                     </div>
                 </div>
@@ -425,8 +392,11 @@
 
     </div>
 
-    <!-- 底部 APP 原生導航列 -->
-    <div class="bottom-nav">
+    <!-- 🟢 底部預設隱藏的觸發橫條 -->
+    <div class="nav-toggle-bar" id="toggle-nav-bar">▲ 顯示導航選單</div>
+
+    <!-- 底部 APP 原生導航列 (加了預設隱藏的 class) -->
+    <div class="bottom-nav" id="popup-nav">
         <div class="nav-btn active" data-target="saving-page">
             <span class="icon">📊</span><span>悠享儲蓄</span>
         </div>
@@ -458,24 +428,37 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             
-            // 🟢 Menu 側邊欄開關邏輯
-            const sideMenu = document.getElementById('side-menu');
-            const menuOverlay = document.getElementById('menu-overlay');
+            // 🟢 底部彈出導航列核心聯動邏輯
+            const toggleBar = document.getElementById('toggle-nav-bar');
+            const popupNav = document.getElementById('popup-nav');
             
-            document.getElementById('open-menu').addEventListener('click', () => {
-                sideMenu.classList.add('open');
-                menuOverlay.style.display = 'block';
+            // 禁一下橫條，切換選單彈出或收回
+            toggleBar.addEventListener('click', function(e) {
+                e.stopPropagation();
+                popupNav.classList.toggle('show');
+                if (popupNav.classList.contains('show')) {
+                    toggleBar.innerText = "▼ 隱藏導航選單";
+                    toggleBar.style.transform = "translateY(-75px)"; // 跟着導航列一起升起
+                } else {
+                    hideNavbar();
+                }
             });
             
-            const closeMenuFunc = () => {
-                sideMenu.classList.remove('open');
-                menuOverlay.style.display = 'none';
-            };
+            // 收回導航列的輔助函數
+            function hideNavbar() {
+                popupNav.classList.remove('show');
+                toggleBar.innerText = "▲ 顯示導航選單";
+                toggleBar.style.transform = "translateY(0)";
+            }
             
-            document.getElementById('close-menu').addEventListener('click', closeMenuFunc);
-            menuOverlay.addEventListener('click', closeMenuFunc);
+            // 點擊頁面任何其他地方，自動收回選單
+            document.addEventListener('click', function(e) {
+                if (!popupNav.contains(e.target) && e.target !== toggleBar) {
+                    hideNavbar();
+                }
+            });
 
-            // 安全的導航列切換
+            // 安全的導航列切換 (按完分頁後自動收回選單)
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const targetId = this.getAttribute('data-target');
@@ -484,6 +467,9 @@
                     document.getElementById(targetId).classList.add('active');
                     this.classList.add('active');
                     window.scrollTo(0,0);
+                    
+                    // 🟢 禁完任何一頁，全自動收埋個選單，保持畫面最大化
+                    hideNavbar();
                 });
             });
 
@@ -885,7 +871,7 @@
             initBankEngine();
             renderMedicalTable();
 
-            // ================= 🚀 全新 PWA 強制更新與離線機制 =================
+            // ================= 🚀 PWA 強制更新與離線機制 =================
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
                     navigator.serviceWorker.register('./sw.js').then(registration => {
