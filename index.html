@@ -3,23 +3,19 @@
 <head>
     <meta charset="UTF-8">
     
-    <!-- 📱 自動適配螢幕尺寸 (禁止雙指放大，適配手機與 iPad) -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
-    <!-- 🍎 iOS Safari 專用：全屏幕 App 模式設定 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="AVA 導航">
     <link rel="apple-touch-icon" href="./icon-512.png">
     <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
     
-    <!-- 🔄 防死記緩存 Meta 標籤 -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <!-- 🏷️ 升級為 v1.3.0 版本號 -->
-    <title>v1.3.0 | AVA 豐盛人生與財富守護導航系統</title>
+    <title>v1.4.0 | AVA 豐盛人生與財富守護導航系統</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
@@ -49,7 +45,7 @@
             overscroll-behavior-y: none;
         }
 
-        /* 頂部極簡極窄導航列 (已移走 Menu ☰ 掣) */
+        /* 頂部極簡極窄導航列 */
         .app-header {
             position: fixed; top: 0; left: 0; right: 0;
             background-color: #0A3D91; color: white;
@@ -89,7 +85,8 @@
         .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text); margin-bottom: 15px; width: 100%; font-weight: bold; }
         .btn-share { background: linear-gradient(135deg, #2ecc71, #27ae60); color: #fff; margin-top: 5px; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3); }
 
-        .summary-toggle-box { display: none; background: #f7fafc; border: 1px dashed #cbd5e0; border-radius: 12px; padding: 15px; margin-bottom: 20px; animation: slideUp 0.3s ease; }
+        /* 🟢 修改分析框：預設直接顯示不隱藏 */
+        .summary-toggle-box { display: block; background: #f7fafc; border: 1px dashed #cbd5e0; border-radius: 12px; padding: 15px; margin-bottom: 20px; animation: slideUp 0.3s ease; }
         .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 10px; }
         .summary-item { background: #fff; padding: 12px; border-radius: 8px; border: 1px solid var(--border); text-align: center; }
         .summary-label { font-size: 0.85rem; color: #718096; font-weight: bold; }
@@ -127,7 +124,7 @@
         
         .client-input-zone { background: #f8f9fa; border: 1px dashed #cbd5e0; padding: 15px; border-radius: 12px; margin-top: 30px; }
 
-        /* 🟢 底部預設隱藏、點擊彈出導航列設計 */
+        /* 底部預設隱藏的觸發橫條 */
         .nav-toggle-bar {
             position: fixed; bottom: 0; left: 0; right: 0; height: 35px;
             background: #0A3D91; color: white; text-align: center; line-height: 35px;
@@ -144,7 +141,6 @@
             padding-bottom: env(safe-area-inset-bottom, 0px);
         }
         
-        /* 當導航列被喚醒彈出時的樣式 */
         .bottom-nav.show {
             transform: translateY(-85px);
         }
@@ -161,14 +157,12 @@
 </head>
 <body>
 
-    <!-- 頂部精緻窄版導航列 -->
     <header class="app-header">
         <div class="app-title">AVA 豐盛導航系統</div>
     </header>
 
     <div class="container">
         
-        <!-- ================= 頁面 1: 安心悠享儲蓄 ================= -->
         <div id="saving-page" class="page active">
             
             <div id="saving-advisor-card" class="advisor-card">
@@ -176,7 +170,7 @@
                     <img src="wa.png" alt="WhatsApp QR" class="advisor-qr-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3670/3670051.png'; this.style.borderColor='#2ecc71';">
                     <div class="advisor-info">
                         <h3>Hi <span class="client-name-highlight client-display-name">貴客</span>，這是您的專屬報告</h3>
-                        <p>10年資深AIA agent - Ivan<br>精心為您定制悠享年年金方案方案。</p>
+                        <p>10年資深AIA agent - Ivan<br>精心為您定制悠享年金方案。</p>
                         <p style="font-size: 0.8rem; color: #95a5a6; margin-top: 8px;">📱 掃描左方二維碼可直接與我 WhatsApp 聯絡</p>
                     </div>
                 </div>
@@ -215,8 +209,7 @@
                         </tr>
                     </thead>
                     <tbody id="saving-table-body">
-                        <!-- JS 動態生成 -->
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
 
@@ -229,7 +222,6 @@
             </div>
         </div>
 
-        <!-- ================= 頁面 2: 定期存款真實效果 ================= -->
         <div id="fd-page" class="page">
             <h2 class="fd-title">🏛️ 定期存款真實效果</h2>
             
@@ -247,8 +239,7 @@
                         </tr>
                     </thead>
                     <tbody id="bank-rates-body">
-                        <!-- 自動同步金管局常規利率 -->
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
 
@@ -269,8 +260,7 @@
                         </tr>
                     </thead>
                     <tbody id="fd-table-body">
-                        <!-- 動態生成 -->
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
             
@@ -280,7 +270,6 @@
             </div>
         </div>
 
-        <!-- ================= 頁面 3: 退休醫保防線 ================= -->
         <div id="medical-page" class="page">
             
             <div id="med-advisor-card" class="advisor-card">
@@ -313,10 +302,7 @@
                     <label>預期壽命 (歲)</label>
                     <input type="number" id="med-life-expectancy" value="85" min="65" max="110">
                 </div>
-                <div class="input-group hide-in-client">
-                    <label>當前年度基礎醫療保費 ($)</label>
-                    <input type="text" id="med-base-premium" value="8,000" style="text-align: center;">
-                </div>
+                
                 <div class="input-group">
                     <label>選擇對沖提取方案</label>
                     <select id="med-plan-select">
@@ -335,27 +321,17 @@
                 </div>
                 <div class="input-group hide-in-client" style="grid-column: span auto; margin-top: 5px;">
                     <label>📁 上載 Excel 醫保保費表 (連動真實保費)</label>
-                    <button class="btn" onclick="document.getElementById('excel-file-uploader').click();" style="background: var(--medical);">📊 點擊選取保費表 Excel (.xlsx)</button>
+                    <button class="btn" id="excel-upload-btn" onclick="document.getElementById('excel-file-uploader').click();" style="background: var(--medical);">📊 點擊選取保費表 Excel (.xlsx)</button>
                     <input type="file" id="excel-file-uploader" accept=".xlsx, .xls" style="display: none;">
                 </div>
             </div>
-
-            <button class="btn-outline control-panel" id="btn-toggle-summary" onclick="toggleMedSummary()" style="padding:10px;">👁️ 顯示 / 隱藏 退休醫保保費總和分析</button>
             
             <div class="summary-toggle-box" id="med-summary-box">
-                <strong>📊 退休至預期壽命 ── 醫保保費累計總和分析：</strong>
+                <strong>📊 退休至預期壽命 ── 醫保防線總和分析：</strong>
                 <div class="summary-grid">
-                    <div class="summary-item">
-                        <div class="summary-label">常規基礎保費總和 (未計調整)</div>
-                        <div class="summary-value" id="lbl-sum-raw">-</div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="summary-label">每年調整複利後總保費</div>
-                        <div class="summary-value" id="lbl-sum-adjusted" style="color: var(--danger);">-</div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="summary-label">調整複利造成的龐大差額</div>
-                        <div class="summary-value" id="lbl-sum-diff" style="color: var(--bank);">-</div>
+                    <div class="summary-item" style="grid-column: span auto;">
+                        <div class="summary-label" style="font-size: 0.95rem; font-weight: 900; color: #4a5568;">醫保累計總保費（內含每年複利調整）</div>
+                        <div class="summary-value" id="lbl-sum-adjusted" style="color: var(--danger); font-size: 1.8rem; margin-top: 8px;">-</div>
                     </div>
                 </div>
             </div>
@@ -371,8 +347,7 @@
                         </tr>
                     </thead>
                     <tbody id="medical-table-body">
-                        <!-- 自動生成 -->
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
 
@@ -392,10 +367,8 @@
 
     </div>
 
-    <!-- 🟢 底部預設隱藏的觸發橫條 -->
     <div class="nav-toggle-bar" id="toggle-nav-bar">▲ 顯示導航選單</div>
 
-    <!-- 底部 APP 原生導航列 (加了預設隱藏的 class) -->
     <div class="bottom-nav" id="popup-nav">
         <div class="nav-btn active" data-target="saving-page">
             <span class="icon">📊</span><span>悠享儲蓄</span>
@@ -408,7 +381,6 @@
         </div>
     </div>
 
-    <!-- 分享彈出視窗 -->
     <div id="share-modal" class="modal-overlay">
         <div class="modal-content">
             <span class="modal-close" id="close-modal">&times;</span>
@@ -428,37 +400,33 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             
-            // 🟢 底部彈出導航列核心聯動邏輯
+            // 底部彈出導航列核心聯動邏輯
             const toggleBar = document.getElementById('toggle-nav-bar');
             const popupNav = document.getElementById('popup-nav');
             
-            // 禁一下橫條，切換選單彈出或收回
             toggleBar.addEventListener('click', function(e) {
                 e.stopPropagation();
                 popupNav.classList.toggle('show');
                 if (popupNav.classList.contains('show')) {
                     toggleBar.innerText = "▼ 隱藏導航選單";
-                    toggleBar.style.transform = "translateY(-75px)"; // 跟着導航列一起升起
+                    toggleBar.style.transform = "translateY(-75px)";
                 } else {
                     hideNavbar();
                 }
             });
             
-            // 收回導航列的輔助函數
             function hideNavbar() {
                 popupNav.classList.remove('show');
                 toggleBar.innerText = "▲ 顯示導航選單";
                 toggleBar.style.transform = "translateY(0)";
             }
             
-            // 點擊頁面任何其他地方，自動收回選單
             document.addEventListener('click', function(e) {
                 if (!popupNav.contains(e.target) && e.target !== toggleBar) {
                     hideNavbar();
                 }
             });
 
-            // 安全的導航列切換 (按完分頁後自動收回選單)
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const targetId = this.getAttribute('data-target');
@@ -467,8 +435,6 @@
                     document.getElementById(targetId).classList.add('active');
                     this.classList.add('active');
                     window.scrollTo(0,0);
-                    
-                    // 🟢 禁完任何一頁，全自動收埋個選單，保持畫面最大化
                     hideNavbar();
                 });
             });
@@ -524,9 +490,9 @@
                 const spl = document.getElementById('saving-plan-select').value;
                 const mra = document.getElementById('med-retirement-age').value;
                 const mle = document.getElementById('med-life-expectancy').value;
-                const mbp = cleanNum(document.getElementById('med-base-premium').value);
                 const msl = document.getElementById('med-adjustment-slider').value;
-                const urlParams = `?cn=${encodeURIComponent(clientName)}&sp=${sp}&sa=${sa}&spl=${spl}&mra=${mra}&mle=${mle}&mbp=${mbp}&msl=${msl}&tab=${activePageId}`;
+                // 移走了 mbp 網址連動
+                const urlParams = `?cn=${encodeURIComponent(clientName)}&sp=${sp}&sa=${sa}&spl=${spl}&mra=${mra}&mle=${mle}&msl=${msl}&tab=${activePageId}`;
                 const finalUrl = baseUrl + urlParams;
 
                 document.getElementById('share-url-text').innerText = finalUrl;
@@ -588,16 +554,10 @@
                 }
                 if(params.has('mra')) document.getElementById('med-retirement-age').value = params.get('mra');
                 if(params.has('mle')) document.getElementById('med-life-expectancy').value = params.get('mle');
-                if(params.has('mbp')) document.getElementById('med-base-premium').value = fmtMoney(params.get('mbp'));
                 if(params.has('msl')) {
                     document.getElementById('med-adjustment-slider').value = params.get('msl');
                     document.getElementById('med-slider-val').innerText = parseFloat(params.get('msl')).toFixed(1) + '%';
                 }
-            }
-
-            window.toggleMedSummary = function() {
-                const box = document.getElementById('med-summary-box');
-                box.style.display = box.style.display === 'block' ? 'none' : 'block';
             }
 
             function getInterpolatedValue(plan, policyYear, multiplier) {
@@ -761,7 +721,6 @@
                 const currentAge = parseInt(document.getElementById('med-age').value) || 40;
                 const retirementAge = parseInt(document.getElementById('med-retirement-age').value) || 60;
                 const lifeExpectancy = parseInt(document.getElementById('med-life-expectancy').value) || 85;
-                const basePremium = cleanNum(document.getElementById('med-base-premium').value) || 8000;
                 const plan = document.getElementById('med-plan-select').value;
                 const adjRate = parseFloat(document.getElementById('med-adjustment-slider').value) / 100;
                 
@@ -773,26 +732,27 @@
                 const sd = schemesData[plan];
                 
                 const retirementPolicyYear = retirementAge - currentAge;
-                let sumRaw = 0;
-                let sumAdjusted = 0;
+                let sumAdjusted = 0; // [修改 3] 只保留複利通脹調整後的累計總保費變數
 
                 for (let targetAge = retirementAge; targetAge <= lifeExpectancy; targetAge++) {
                     let progressYear = targetAge - retirementAge;
                     let totalPolicyYear = retirementPolicyYear + progressYear;
                     if (totalPolicyYear <= 0) totalPolicyYear = 1;
 
-                    let currentBase = basePremium;
+                    // [修改 4 - BUG 修復核心]：如果 Excel 有上載真實數據就取用，否則才預設常規算法
+                    let currentBase = 8000; 
                     if (excelPremiumData && excelPremiumData[targetAge]) {
-                        excelPremiumData[targetAge];
+                        currentBase = excelPremiumData[targetAge];
                     } else {
-                        currentBase = basePremium * (1 + Math.floor(totalPolicyYear / 5) * 0.12);
+                        currentBase = 8000 * (1 + Math.floor(totalPolicyYear / 5) * 0.12);
                     }
 
+                    // [修改 4] 核心算法對齊：不管 Excel 真實基礎保費還是常規值，都需要完美乘上對應的每年複利通脹比率！
                     let adjustedPremium = currentBase * Math.pow(1 + adjRate, totalPolicyYear);
                     let currentAnnuity = totalPolicyYear >= sd.startYr ? sd.extract * multiplier : 0;
                     let remainingDefenseBalance = getInterpolatedValue(plan, totalPolicyYear, multiplier);
-                    sumRaw += currentBase;
-                    sumAdjusted += adjustedPremium;
+                    
+                    sumAdjusted += adjustedPremium; // 精準加總複利保費（手拉滑桿為 0% 時，複利權重為 1，此時加總數字將與 Excel 完全一致）
 
                     tbody.innerHTML += `
                         <tr>
@@ -804,9 +764,8 @@
                     `;
                 }
 
-                document.getElementById('lbl-sum-raw').innerText = '$' + fmtMoney(sumRaw);
+                // [修改 3 & 4] 更新頂層分析框數據：完美將調整複利後加總金額輸出到總保費框內
                 document.getElementById('lbl-sum-adjusted').innerText = '$' + fmtMoney(sumAdjusted);
-                document.getElementById('lbl-sum-diff').innerText = '$' + fmtMoney(sumAdjusted - sumRaw);
             }
 
             document.getElementById('excel-file-uploader').addEventListener('change', function(e) {
@@ -822,7 +781,12 @@
                         let a = parseInt(row[0]); let p = parseFloat(row[1]);
                         if (!isNaN(a) && !isNaN(p)) { excelPremiumData[a] = p; }
                     });
-                    alert('🎉 專屬保費 Excel 成功加載！');
+                    
+                    // [修改 2] 移走傳統彈出視窗（Alert），改為直接動態渲染按鈕文字，更具 App 專業流暢度
+                    const uploadBtn = document.getElementById('excel-upload-btn');
+                    uploadBtn.innerText = "✅ 醫保保費表已成功上載好！";
+                    uploadBtn.style.background = "#2ecc71"; // 按鈕自動變為成功綠色
+                    
                     renderMedicalTable();
                 };
                 reader.readAsArrayBuffer(file);
@@ -834,7 +798,6 @@
                 renderSavingTable(); renderMedicalTable();
             });
             setupCommaInput('med-principal', function() { renderMedicalTable(); });
-            setupCommaInput('med-base-premium', function() { renderMedicalTable(); });
 
             document.getElementById('fd-table-body').addEventListener('input', function(e) {
                 if (e.target.classList.contains('row-principal')) {
