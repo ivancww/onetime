@@ -15,7 +15,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <title>v1.6.0 | AVA 豐盛人生與財富守護導航系統</title>
+    <title>v1.7.0 | AVA 豐盛人生與財富守護導航系統</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
@@ -92,7 +92,7 @@
         .summary-label { font-size: 0.85rem; color: #718096; font-weight: bold; }
         .summary-value { font-size: 1.3rem; font-weight: 900; margin-top: 4px; }
 
-        /* 👑 優化後的精算對比卡片：徹底移走細字，畫面極致乾淨 */
+        /* 精算對比卡片樣式 */
         .actuarial-card {
             background: linear-gradient(135deg, #ffffff, #f1f5f9);
             border: 2px solid #0A3D91; border-radius: 14px;
@@ -212,7 +212,7 @@
                     <label>現時年齡 (歲)</label>
                     <input type="number" id="saving-age" value="40" min="1" max="80">
                 </div>
-                <div class="input-group" style="grid-column: span auto;">
+                <div class="input-grid" style="grid-column: span auto;">
                     <label>選擇暖心提取方案</label>
                     <select id="saving-plan-select">
                         <option value="A">方案 A：第 1 年起提取年金 (4% ── 安心起航)</option>
@@ -380,7 +380,7 @@
                 
                 <div class="actuarial-row">
                     <div class="actuarial-label">🔴 <strong>沒有提前預備下 - 總付出金額</strong></div>
-                    <div class="actuarial-badge-red" id="calc-outcome-a">$0</div>
+                    <div class="actuarial-badge-red" id="calc-outcome-a">-</div>
                 </div>
                 
                 <div class="actuarial-row" style="margin-top: 18px;">
@@ -776,7 +776,6 @@
                 const retirementPolicyYear = retirementAge - currentAge;
                 let sumAdjusted = 0;
                 
-                // 🟢 結局 B 精算核心新公式變數：(每年領取金額 - 醫保保費) + 餘額 - 本金
                 let accumulatedNetProfit = 0; 
                 let finalDefenseBalance = 0; 
 
@@ -798,7 +797,6 @@
                     
                     sumAdjusted += adjustedPremium;
                     
-                    // 🟢 新計算邏輯實作：每年滾動將 (年金領取金額 - 當年醫療保費) 累加
                     accumulatedNetProfit += (currentAnnuity - adjustedPremium);
 
                     if (targetAge === lifeExpectancy) {
@@ -818,13 +816,13 @@
                 // 更新頂層分析框
                 document.getElementById('lbl-sum-adjusted').innerText = '$' + fmtMoney(sumAdjusted);
                 
-                // 🟢 結局 B 精算新邏輯：[每年領取減保費的累計差額] + [最後一年的賬戶餘額] - [一開始投入的獨立本金]
+                // 精算邏輯：
                 const outcomeA = sumAdjusted; 
                 const outcomeB = accumulatedNetProfit + finalDefenseBalance - medPrincipal; 
                 const netBenefit = outcomeA + outcomeB; 
                 
-                // 渲染至極簡對比看板
-                document.getElementById('calc-outcome-a').innerText = '$' + fmtMoney(outcomeA);
+                // 🟢 結局 A 固定渲染為 「-」，結局 B 和 總淨效益 依然在背景保持精準運算與顯示
+                document.getElementById('calc-outcome-a').innerText = '-';
                 document.getElementById('calc-outcome-b').innerText = '$' + fmtMoney(outcomeB);
                 document.getElementById('calc-net-benefit').innerText = '$' + fmtMoney(netBenefit);
             }
