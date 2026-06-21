@@ -1,5 +1,5 @@
 // 🚀 正式同步升級為 v1.2.0！日後更新 index.html 時，記得將這裡的版本號一併累加（例如 v1.2.1）
-const APP_VERSION = 'v1.8.0';
+const APP_VERSION = 'v1.9.0';
 const CACHE_NAME = `ava-wealth-app-${APP_VERSION}`;
 
 // 🚀 離線緩存完整清單，確保包含新加入的 icon-192.png
