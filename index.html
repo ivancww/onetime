@@ -3,23 +3,19 @@
 <head>
     <meta charset="UTF-8">
     
-    <!-- 📱 自動適配螢幕尺寸 (禁止雙指放大，適配手機與 iPad) -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
-    <!-- 🍎 iOS Safari 專用：全屏幕 App 模式設定 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="AVA 導航">
     <link rel="apple-touch-icon" href="./icon-512.png">
     <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
     
-    <!-- 🔄 防死記緩存 Meta 標籤 -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <!-- 🏷️ 升級為 v1.5.0 版本號 -->
-    <title>v1.5.0 | AVA 豐盛人生與財富守護導航系統</title>
+    <title>v1.6.0 | AVA 豐盛人生與財富守護導航系統</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
@@ -96,28 +92,29 @@
         .summary-label { font-size: 0.85rem; color: #718096; font-weight: bold; }
         .summary-value { font-size: 1.3rem; font-weight: 900; margin-top: 4px; }
 
-        /* 🟢 新增：高端精算對比卡片樣式 */
+        /* 👑 優化後的精算對比卡片：徹底移走細字，畫面極致乾淨 */
         .actuarial-card {
             background: linear-gradient(135deg, #ffffff, #f1f5f9);
             border: 2px solid #0A3D91; border-radius: 14px;
-            padding: 20px; margin-top: 25px; margin-bottom: 15px;
+            padding: 22px; margin-top: 25px; margin-bottom: 15px;
             box-shadow: 0 6px 18px rgba(10, 61, 145, 0.08);
         }
         .actuarial-title {
             font-size: 1.1rem; font-weight: 900; color: #0A3D91;
-            margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #cbd5e0;
-            display: flex; align-items: center; gap: 8px;
+            margin-bottom: 18px; padding-bottom: 8px; border-bottom: 2px solid #cbd5e0;
         }
         .actuarial-row {
-            margin-bottom: 12px; font-size: 0.95rem; line-height: 1.6; font-weight: 500; color: #34495e;
+            margin-bottom: 15px; font-size: 1.05rem; font-weight: 700; color: #2c3e50;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
         }
-        .actuarial-badge-red { background: #fde8e8; color: var(--danger); padding: 2px 8px; border-radius: 4px; font-weight: bold; }
-        .actuarial-badge-purple { background: #f3e8ff; color: var(--purple); padding: 2px 8px; border-radius: 4px; font-weight: bold; }
+        .actuarial-label { display: flex; align-items: center; gap: 6px; }
+        .actuarial-badge-red { background: #fde8e8; color: var(--danger); padding: 4px 12px; border-radius: 6px; font-weight: 900; font-size: 1.1rem; }
+        .actuarial-badge-purple { background: #f3e8ff; color: var(--purple); padding: 4px 12px; border-radius: 6px; font-weight: 900; font-size: 1.1rem; }
         
         .actuarial-highlight-box {
             background: linear-gradient(135deg, #fff9db, #fff3bf);
             border: 1px dashed #fab005; border-radius: 10px;
-            padding: 15px; margin-top: 15px; text-align: center;
+            padding: 15px; margin-top: 20px; text-align: center;
         }
 
         .table-responsive { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); margin-top: 15px; }
@@ -152,7 +149,7 @@
         
         .client-input-zone { background: #f8f9fa; border: 1px dashed #cbd5e0; padding: 15px; border-radius: 12px; margin-top: 30px; }
 
-        /*底部預設隱藏的觸發橫條 */
+        /* 底部預設隱藏的觸發橫條 */
         .nav-toggle-bar {
             position: fixed; bottom: 0; left: 0; right: 0; height: 35px;
             background: #0A3D91; color: white; text-align: center; line-height: 35px;
@@ -185,14 +182,12 @@
 </head>
 <body>
 
-    <!-- 頂部精緻窄版導航列 -->
     <header class="app-header">
         <div class="app-title">AVA 豐盛導航系統</div>
     </header>
 
     <div class="container">
         
-        <!-- ================= 頁面 1: 安心悠享儲蓄 ================= -->
         <div id="saving-page" class="page active">
             
             <div id="saving-advisor-card" class="advisor-card">
@@ -239,8 +234,7 @@
                         </tr>
                     </thead>
                     <tbody id="saving-table-body">
-                        <!-- JS 動態生成 -->
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
 
@@ -253,7 +247,6 @@
             </div>
         </div>
 
-        <!-- ================= 頁面 2: 定期存款真實效果 ================= -->
         <div id="fd-page" class="page">
             <h2 class="fd-title">🏛️ 定期存款真實效果</h2>
             
@@ -271,8 +264,7 @@
                         </tr>
                     </thead>
                     <tbody id="bank-rates-body">
-                        <!-- 自動同步金管局常規利率 -->
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
 
@@ -293,8 +285,7 @@
                         </tr>
                     </thead>
                     <tbody id="fd-table-body">
-                        <!-- 動態生成 -->
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
             
@@ -304,7 +295,6 @@
             </div>
         </div>
 
-        <!-- ================= 頁面 3: 退休醫保防線 ================= -->
         <div id="medical-page" class="page">
             
             <div id="med-advisor-card" class="advisor-card">
@@ -360,7 +350,6 @@
                 </div>
             </div>
             
-            <!-- 頂層精簡分析框 -->
             <div class="summary-toggle-box" id="med-summary-box">
                 <strong>📊 退休至預期壽命 ── 醫保防線總和分析：</strong>
                 <div class="summary-grid">
@@ -382,35 +371,26 @@
                         </tr>
                     </thead>
                     <tbody id="medical-table-body">
-                        <!-- 自動生成 -->
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
 
-            <!-- 🟢 [新增] 2. 數據與計算方法（精算邏輯）動態看板 -->
             <div class="actuarial-card">
-                <div class="actuarial-title">⚖️ AVA 醫保防線精算邏輯對比</div>
+                <div class="actuarial-title">⚖️ AVA 醫保防線精算對比</div>
                 
                 <div class="actuarial-row">
-                    🔴 <strong>結局 A（不配置方案）</strong> —— 總付出金額 <span class="actuarial-badge-red" id="calc-outcome-a">$0</span><br>
-                    <span style="font-size:0.85rem; color:#7f8c8d; display:block; padding-left:22px;">
-                        計算方法：客戶從退休年齡到預期壽命之間的「原廠保費」，全部乘以「醫療通脹率」進行累計複利。這是<strong>純支出、有去無回</strong>的沉重代價。
-                    </span>
+                    <div class="actuarial-label">🔴 <strong>沒有提前預備下 - 總付出金額</strong></div>
+                    <div class="actuarial-badge-red" id="calc-outcome-a">$0</div>
                 </div>
                 
-                <div class="actuarial-row" style="margin-top: 15px;">
-                    🔮 <strong>結局 B（配置方案）</strong> —— 期滿淨結餘 <span class="actuarial-badge-purple" id="calc-outcome-b">$0</span><br>
-                    <span style="font-size:0.85rem; color:#7f8c8d; display:block; padding-left:22px;">
-                        計算方法：透過分段投入時光錦囊，利用「複利滾存」的被動收入全自動進場對沖醫療保費。不仅<strong>費用全免，期滿還能保留大筆本金紅利</strong>。
-                    </span>
+                <div class="actuarial-row" style="margin-top: 18px;">
+                    <div class="actuarial-label">🔮 <strong>提前預備下 - 淨結餘</strong></div>
+                    <div class="actuarial-badge-purple" id="calc-outcome-b">$0</div>
                 </div>
                 
                 <div class="actuarial-highlight-box">
-                    <span style="font-size: 0.9rem; font-weight: bold; color: #d35400; display: block; margin-bottom: 5px;">🏆 總淨效益</span>
-                    <span style="font-size: 2rem; font-weight: 900; color: #27ae60;" id="calc-net-benefit">$0</span>
-                    <p style="font-size:0.82rem; color:#666; margin-top:8px; font-weight:bold; line-height:1.4;">
-                        精算結論：這絕非普通的保費折扣，而是將原本白白花掉的消費 <strong>100% 扭轉為可以無限期傳承的黃金資產</strong>。
-                    </p>
+                    <span style="font-size: 0.95rem; font-weight: bold; color: #d35400; display: block; margin-bottom: 5px;">🏆 總淨效益</span>
+                    <span style="font-size: 2.2rem; font-weight: 900; color: #27ae60;" id="calc-net-benefit">$0</span>
                 </div>
             </div>
 
@@ -430,10 +410,8 @@
 
     </div>
 
-    <!-- 底部預設隱藏的觸發橫條 -->
     <div class="nav-toggle-bar" id="toggle-nav-bar">▲ 顯示導航選單</div>
 
-    <!-- 底部 APP 原生導航列 -->
     <div class="bottom-nav" id="popup-nav">
         <div class="nav-btn active" data-target="saving-page">
             <span class="icon">📊</span><span>悠享儲蓄</span>
@@ -446,7 +424,6 @@
         </div>
     </div>
 
-    <!-- 分享彈出視窗 -->
     <div id="share-modal" class="modal-overlay">
         <div class="modal-content">
             <span class="modal-close" id="close-modal">&times;</span>
@@ -798,7 +775,10 @@
                 
                 const retirementPolicyYear = retirementAge - currentAge;
                 let sumAdjusted = 0;
-                let finalDefenseBalance = 0; // 用於捕捉預期壽命那一年的最終期末結餘
+                
+                // 🟢 結局 B 精算核心新公式變數：(每年領取金額 - 醫保保費) + 餘額 - 本金
+                let accumulatedNetProfit = 0; 
+                let finalDefenseBalance = 0; 
 
                 for (let targetAge = retirementAge; targetAge <= lifeExpectancy; targetAge++) {
                     let progressYear = targetAge - retirementAge;
@@ -818,7 +798,9 @@
                     
                     sumAdjusted += adjustedPremium;
                     
-                    // 如果運算走到最後一年（預期壽命），就鎖定該年份的戶口結餘數值
+                    // 🟢 新計算邏輯實作：每年滾動將 (年金領取金額 - 當年醫療保費) 累加
+                    accumulatedNetProfit += (currentAnnuity - adjustedPremium);
+
                     if (targetAge === lifeExpectancy) {
                         finalDefenseBalance = remainingDefenseBalance;
                     }
@@ -833,14 +815,15 @@
                     `;
                 }
 
-                // 更新頂層分析框數據
+                // 更新頂層分析框
                 document.getElementById('lbl-sum-adjusted').innerText = '$' + fmtMoney(sumAdjusted);
                 
-                // 🟢 [核心新增] 精算邏輯動態數值套入
-                const outcomeA = sumAdjusted; // 結局 A 保費總額 = 快取加總後的總付出金額
-                const outcomeB = finalDefenseBalance; // 結局 B 戶口結餘 = 預期壽命那年的保單期滿淨結餘
-                const netBenefit = outcomeA + outcomeB; // 🏆 總淨效益 = 結局 A + 結局 B
+                // 🟢 結局 B 精算新邏輯：[每年領取減保費的累計差額] + [最後一年的賬戶餘額] - [一開始投入的獨立本金]
+                const outcomeA = sumAdjusted; 
+                const outcomeB = accumulatedNetProfit + finalDefenseBalance - medPrincipal; 
+                const netBenefit = outcomeA + outcomeB; 
                 
+                // 渲染至極簡對比看板
                 document.getElementById('calc-outcome-a').innerText = '$' + fmtMoney(outcomeA);
                 document.getElementById('calc-outcome-b').innerText = '$' + fmtMoney(outcomeB);
                 document.getElementById('calc-net-benefit').innerText = '$' + fmtMoney(netBenefit);
