@@ -15,11 +15,10 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <title>v1.9.0 | AVA 豐盛人生與財富守護導航系統</title>
+    <title>v2.1.0 | AVA 豐盛人生與財富守護導航系統</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     
     <style>
         :root {
@@ -311,7 +310,7 @@
                     <label>輸入醫保獨立本金 ($)</label>
                     <input type="text" id="med-principal" value="200,000" style="color: var(--medical); text-align: center;">
                 </div>
-                <div class="input-group hide-in-client">
+                <div class="input-group">
                     <label>現時年齡 (歲)</label>
                     <input type="number" id="med-age" value="40" min="1" max="80">
                 </div>
@@ -319,7 +318,7 @@
                     <label>預計退休年齡 (歲)</label>
                     <input type="number" id="med-retirement-age" value="60" min="45" max="85">
                 </div>
-                <div class="input-group hide-in-client">
+                <div class="input-group">
                     <label>預期壽命 (歲)</label>
                     <input type="number" id="med-life-expectancy" value="85" min="65" max="110">
                 </div>
@@ -339,10 +338,20 @@
                         <span class="slider-value" id="med-slider-val">5.0%</span>
                     </div>
                 </div>
-                <div class="input-group hide-in-client" style="grid-column: span auto; margin-top: 5px;">
-                    <label>📁 上載 Excel 醫保保費表 (連動真實保費)</label>
-                    <button class="btn" id="excel-upload-btn" onclick="document.getElementById('excel-file-uploader').click();" style="background: var(--medical);">📊 點擊選取保費表 Excel (.xlsx)</button>
-                    <input type="file" id="excel-file-uploader" accept=".xlsx, .xls" style="display: none;">
+                
+                <div class="input-group" style="grid-column: span auto; margin-top: 5px;">
+                    <label style="color: var(--medical);">👑 選擇 AIA 醫保專屬計劃（實時連動雲端精算）</label>
+                    <select id="med-excel-plan-dropdown" style="border-color: var(--medical); background: #fdfdfd;">
+                        <option value="ELITE_0" selected>👑 尊顯計劃 (自付額 HK$ 0)</option>
+                        <option value="ELITE_16">👑 尊顯計劃 (自付額 HK$ 16,000)</option>
+                        <option value="ELITE_25">👑 尊顯計劃 (自付額 HK$ 25,000)</option>
+                        <option value="WISE_0">🛡️ 睿選計劃 (自付額 HK$ 0)</option>
+                        <option value="WISE_88">🛡️ 睿選計劃 (自付額 HK$ 8,800)</option>
+                        <option value="WISE_18">🛡️ 睿選計劃 (自付額 HK$ 18,000)</option>
+                        <option value="WISE_30">🛡️ 睿選計劃 (自付額 HK$ 30,000)</option>
+                        <option value="FLEXI_M">👨 靈活計劃 (男普通房 基本保費)</option>
+                        <option value="FLEXI_F">👩 靈活計劃 (女普通房 基本保費)</option>
+                    </select>
                 </div>
             </div>
             
@@ -350,7 +359,7 @@
                 <strong>📊 退休至預期壽命 ── 醫保防線總和分析：</strong>
                 <div class="summary-grid">
                     <div class="summary-item" style="grid-column: span auto;">
-                        <div class="summary-label" style="font-size: 0.95rem; font-weight: 900; color: #4a5568;">醫保累計總保費（內含每年複利調整）</div>
+                        <div class="summary-label" style="font-size: 0.95rem; font-weight: 900; color: #4a5568;" id="med-summary-label-title">醫保累計總保費（內含每年複利調整）</div>
                         <div class="summary-value" id="lbl-sum-adjusted" style="color: var(--danger); font-size: 1.8rem; margin-top: 8px;">-</div>
                     </div>
                 </div>
@@ -515,7 +524,20 @@
                 'D': { extract: 0, startYr: 99, data: {5:222574, 10:328294, 15:455492, 20:649560, 25:934992, 30:1322873, 35:1812451, 40:2483215, 45:3402219, 50:4661335, 55:6386434, 60:8749968} }
             };
             let generatedBankRates = {};
-            let excelPremiumData = null;
+            
+            // 9 大專屬計劃 Google Sheets CSV 真實連結
+            const medicalCloudUrls = {
+                'ELITE_0': 'https://docs.google.com/spreadsheets/d/1wnoW04BAGmujkGibxRI6a_YPQB-7ydNt0d8YBEz-77w/export?format=csv',
+                'ELITE_16': 'https://docs.google.com/spreadsheets/d/1NTsZs8xgEGYzqJb0KubgyvTYNfCWMJBuUZP-9fc8WZ0/export?format=csv',
+                'ELITE_25': 'https://docs.google.com/spreadsheets/d/1u33a1dpKqicADenJX3pyByI08LLM0qOQGPZzDxHc2MY/export?format=csv',
+                'WISE_0': 'https://docs.google.com/spreadsheets/d/1i9pDkhXjKSfu2zjImoz9a5U0JUuxqoGz4_3j9El4SyY/export?format=csv',
+                'WISE_88': 'https://docs.google.com/spreadsheets/d/1enfXeDK5v8OuuIGUT9Y6qC0O_1YCmLx2AU63LpxfAzE/export?format=csv',
+                'WISE_18': 'https://docs.google.com/spreadsheets/d/1eAVVki3uhUodYgE5m3qSF2tEU8cQRw6JGjE_B63o2Tg/export?format=csv',
+                'WISE_30': 'https://docs.google.com/spreadsheets/d/1Haos2s3w24EpBWjRUeKA-gMfZ_ovzh9HsFrKmJQZT5M/export?format=csv',
+                'FLEXI_M': 'https://docs.google.com/spreadsheets/d/1tCBEMv00y13vzN2QY_yivoGruTKmYhnF6NqIc-uovmE/export?format=csv',
+                'FLEXI_F': 'https://docs.google.com/spreadsheets/d/1G6JirabWJPrTtsdPuzzfyo-D-EPIbbdCM3HvFUW7ZCw/export?format=csv'
+            };
+            let excelPremiumData = null; 
 
             // 分享 Modal 與 URL 生成邏輯
             function openShareModal() {
@@ -530,7 +552,9 @@
                 const mra = document.getElementById('med-retirement-age').value;
                 const mle = document.getElementById('med-life-expectancy').value;
                 const msl = document.getElementById('med-adjustment-slider').value;
-                const urlParams = `?cn=${encodeURIComponent(clientName)}&sp=${sp}&sa=${sa}&spl=${spl}&mra=${mra}&mle=${mle}&msl=${msl}&tab=${activePageId}`;
+                const medPlanDropdown = document.getElementById('med-excel-plan-dropdown').value;
+                
+                const urlParams = `?cn=${encodeURIComponent(clientName)}&sp=${sp}&sa=${sa}&spl=${spl}&mra=${mra}&mle=${mle}&msl=${msl}&mp=${medPlanDropdown}&tab=${activePageId}`;
                 const finalUrl = baseUrl + urlParams;
 
                 document.getElementById('share-url-text').innerText = finalUrl;
@@ -595,6 +619,9 @@
                 if(params.has('msl')) {
                     document.getElementById('med-adjustment-slider').value = params.get('msl');
                     document.getElementById('med-slider-val').innerText = parseFloat(params.get('msl')).toFixed(1) + '%';
+                }
+                if(params.has('mp')) {
+                    document.getElementById('med-excel-plan-dropdown').value = params.get('mp');
                 }
             }
 
@@ -752,6 +779,44 @@
                 }
             }
 
+            // 雲端實時下載並解析 CSV 引擎
+            async function fetchMedicalPlanFromCloud(planKey) {
+                const targetUrl = medicalCloudUrls[planKey];
+                if (!targetUrl) return;
+                
+                const titleLabel = document.getElementById('med-summary-label-title');
+                
+                try {
+                    titleLabel.innerText = "🔄 正在同步雲端保費數據中...";
+                    
+                    const response = await fetch(targetUrl);
+                    if (!response.ok) throw new Error('網絡連線異常');
+                    const csvText = await response.text();
+                    
+                    excelPremiumData = {};
+                    const lines = csvText.split(/\r?\n/);
+                    lines.forEach(line => {
+                        const columns = line.split(',');
+                        if (columns.length >= 2) {
+                            let ageKey = parseInt(columns[0].trim(), 10);
+                            let premiumVal = parseFloat(columns[1].trim());
+                            if (!isNaN(ageKey) && !isNaN(premiumVal)) {
+                                excelPremiumData[ageKey] = premiumVal;
+                            }
+                        }
+                    });
+                    
+                    titleLabel.innerText = "醫保累計總保費（已實時同步 A+ 精算庫）";
+                    renderMedicalTable(); 
+                    
+                } catch (error) {
+                    console.error('AVA 雲端同步失敗:', error);
+                    titleLabel.innerText = "⚠️ 雲端保費同步超時，已啟用系統內置基準保費";
+                    excelPremiumData = null; 
+                    renderMedicalTable();
+                }
+            }
+
             // ================= 頁面 3: 醫保防線全自動更新 =================
             function renderMedicalTable() {
                 const medPrincipal = cleanNum(document.getElementById('med-principal').value) || 200000;
@@ -775,13 +840,14 @@
                 let accumulatedNetProfit = 0; 
                 let finalDefenseBalance = 0; 
 
+                // 🟢 核心連動優化：迴圈範圍完全鎖定手動輸入的 [退休年齡] 至 [預期壽命] 
                 for (let targetAge = retirementAge; targetAge <= lifeExpectancy; targetAge++) {
                     let progressYear = targetAge - retirementAge;
                     let totalPolicyYear = retirementPolicyYear + progressYear;
                     if (totalPolicyYear <= 0) totalPolicyYear = 1;
 
                     let currentBase = 8000; 
-                    if (excelPremiumData && excelPremiumData[targetAge]) {
+                    if (excelPremiumData && excelPremiumData[targetAge] !== undefined) {
                         currentBase = excelPremiumData[targetAge];
                     } else {
                         currentBase = 8000 * (1 + Math.floor(totalPolicyYear / 5) * 0.12);
@@ -792,7 +858,6 @@
                     let remainingDefenseBalance = getInterpolatedValue(plan, totalPolicyYear, multiplier);
                     
                     sumAdjusted += adjustedPremium;
-                    
                     accumulatedNetProfit += (currentAnnuity - adjustedPremium);
 
                     if (targetAge === lifeExpectancy) {
@@ -809,44 +874,24 @@
                     `;
                 }
 
-                // 更新頂層分析框
+                // 🟢 確保每次手動更新年期後，頂欄總保費數值完全鎖定最新總和
                 document.getElementById('lbl-sum-adjusted').innerText = '$' + fmtMoney(sumAdjusted);
                 
-                // 精算對比邏輯運算：
+                // 🟢 精算對比看板：完美跟隨手動年期範圍、即時動態加總
                 const outcomeA = sumAdjusted; 
                 const outcomeB = accumulatedNetProfit + finalDefenseBalance - medPrincipal; 
                 const netBenefit = outcomeA + outcomeB; 
                 
-                // 🟢 結局 A 完美修正為真正嘅「負數」赤字格式（例如：-$1,302,217）
                 document.getElementById('calc-outcome-a').innerText = '-$' + fmtMoney(outcomeA);
                 document.getElementById('calc-outcome-b').innerText = '$' + fmtMoney(outcomeB);
                 document.getElementById('calc-net-benefit').innerText = '$' + fmtMoney(netBenefit);
             }
 
-            document.getElementById('excel-file-uploader').addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    const rows = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { header: 1 });
-                    excelPremiumData = {};
-                    rows.forEach((row) => {
-                        let a = parseInt(row[0]); let p = parseFloat(row[1]);
-                        if (!isNaN(a) && !isNaN(p)) { excelPremiumData[a] = p; }
-                    });
-                    
-                    const uploadBtn = document.getElementById('excel-upload-btn');
-                    uploadBtn.innerText = "✅ 醫保保費表已成功上載好！";
-                    uploadBtn.style.background = "#2ecc71";
-                    
-                    renderMedicalTable();
-                };
-                reader.readAsArrayBuffer(file);
+            // ================= 綁定所有聯動 =================
+            document.getElementById('med-excel-plan-dropdown').addEventListener('change', function() {
+                fetchMedicalPlanFromCloud(this.value);
             });
 
-            // ================= 綁定所有聯動 =================
             setupCommaInput('saving-principal', function(val) {
                 document.getElementById('med-principal').value = fmtMoney(val);
                 renderSavingTable(); renderMedicalTable();
@@ -875,6 +920,8 @@
             });
 
             document.getElementById('fd-table-body').addEventListener('change', renderFDTable);
+            
+            // 🟢 強效聯動監聽：當手動打字修改年齡、退休、壽命、提取方案、滑桿時，全部秒速重啟計算，確保數據同步
             document.getElementById('med-age').addEventListener('input', renderMedicalTable);
             document.getElementById('med-retirement-age').addEventListener('input', renderMedicalTable);
             document.getElementById('med-life-expectancy').addEventListener('input', renderMedicalTable);
@@ -886,7 +933,9 @@
             loadUrlParams(); 
             renderSavingTable();
             initBankEngine();
-            renderMedicalTable();
+            
+            const initialPlan = document.getElementById('med-excel-plan-dropdown').value;
+            fetchMedicalPlanFromCloud(initialPlan);
 
             // ================= 🚀 PWA 強制更新與離線機制 =================
             if ('serviceWorker' in navigator) {
