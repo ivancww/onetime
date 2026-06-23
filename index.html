@@ -14,7 +14,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <title>v2.5.0 | AVA 豐盛人生與財富守護導航系統</title>
+    <title>v2.6.0 | AVA 豐盛人生與財富守護導航系統</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
@@ -32,7 +32,7 @@
         * { box-sizing: border-box; }
         body { font-family: 'Noto Sans TC', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; padding-bottom: 50px; padding-top: 50px; overscroll-behavior-y: none; }
 
-        /* 頂部精緻窄版導航列 */
+        /* 頂部導航列 */
         .app-header {
             position: fixed; top: 0; left: 0; right: 0;
             background-color: #0A3D91; color: white;
@@ -79,7 +79,7 @@
         .actuarial-badge-red { background: #fde8e8; color: var(--danger); padding: 4px 12px; border-radius: 6px; font-weight: 900; font-size: 1.1rem; }
         .actuarial-badge-purple { background: #f3e8ff; color: var(--purple); padding: 4px 12px; border-radius: 6px; font-weight: 900; font-size: 1.1rem; }
 
-        .table-responsive { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); margin-top: 15px; }
+        .table-responsive { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); margin-top: 5px; }
         table { width: 100%; border-collapse: collapse; white-space: nowrap; font-size: 0.95rem; }
         th, td { padding: 12px 15px; text-align: right; border-bottom: 1px solid var(--border); }
         th { background: #f7fafc; color: #4a5568; font-weight: 700; }
@@ -89,17 +89,17 @@
         .c-blue { color: #2980b9 !important; font-weight: bold; }
         .c-purple { color: var(--purple) !important; font-weight: 900; font-size: 1.05rem; }
 
-        /* 🟢 實際需繳欄位：預設隱藏控制 */
+        /* 🟢 醫保實繳隱藏欄位樣式 */
         .med-table .col-actual { display: none; }
         .med-table.show-actual .col-actual { display: table-cell; animation: fadeIn 0.3s ease; background-color: #fffaf0; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* 微型開關「！」標誌樣式 */
+        /* 🟢 微型開關「！」標誌樣式 */
         .mini-toggle-logo {
             cursor: pointer; background: #e74c3c; color: white; border-radius: 50%;
             width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center;
-            font-size: 0.75rem; font-weight: 900; transition: 0.2s; vertical-align: middle; margin-left: 6px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+            font-size: 0.8rem; font-weight: 900; transition: 0.2s; vertical-align: middle; margin-left: 6px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.2); font-family: monospace;
         }
 
         .btn { background: var(--primary); color: #fff; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 1rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; }
@@ -127,7 +127,7 @@
         
         .client-input-zone { background: #f8f9fa; border: 1px dashed #cbd5e0; padding: 15px; border-radius: 12px; margin-top: 30px; }
 
-        /* 底部原生導航列 */
+        /* 底部導航列 */
         .nav-toggle-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 35px; background: #0A3D91; color: white; text-align: center; line-height: 35px; font-size: 0.8rem; font-weight: bold; cursor: pointer; z-index: 1499; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); letter-spacing: 1px; padding-bottom: env(safe-area-inset-bottom, 0px); transition: 0.3s ease; }
         .bottom-nav { position: fixed; bottom: -85px; left: 0; right: 0; height: 75px; background: #ffffff; box-shadow: 0 -5px 20px rgba(0,0,0,0.15); display: flex; z-index: 1500; transition: transform 0.3s cubic-bezier(0.1, 0.7, 0.1, 1); padding-bottom: env(safe-area-inset-bottom, 0px); }
         .bottom-nav.show { transform: translateY(-85px); }
@@ -141,7 +141,7 @@
 <body>
 
     <header class="app-header">
-        <div class="app-title">v2.5.0 | AVA 豐盛導航系統</div>
+        <div class="app-title">v2.6.0 | AVA 豐盛導航系統</div>
     </header>
 
     <div class="container">
@@ -303,7 +303,7 @@
                 </div>
                 
                 <div class="input-group" style="grid-column: span auto; margin-top: 5px;">
-                    <label style="color: var(--medical);">👑 選擇 AIA 醫保專屬計劃（實時連動雲端精算）</label>
+                    <label style="color: var(--medical);">👑 選擇 AIA 醫保專屬計劃（自動計算基準保費）</label>
                     <select id="med-excel-plan-dropdown" style="border-color: var(--medical); background: #fdfdfd;">
                         <option value="ELITE_0" selected>👑 尊顯計劃 (自付額 HK$ 0)</option>
                         <option value="ELITE_16">👑 尊顯計劃 (自付額 HK$ 16,000)</option>
@@ -344,12 +344,14 @@
                 </table>
             </div>
 
-            <div class="actuarial-card" style="margin-top: 15px;">
+            <div class="actuarial-card">
                 <div class="actuarial-title">⚖️ AVA 醫保防線精算對比</div>
+                
                 <div class="actuarial-row">
                     <div class="actuarial-label">🔴 <strong>沒有提前預備下 - 總付出金額</strong></div>
                     <div class="actuarial-badge-red" id="calc-outcome-a">-$0</div>
                 </div>
+                
                 <div class="actuarial-row" style="margin-bottom: 0;">
                     <div class="actuarial-label">🔮 <strong>提前預備下 - 淨結餘</strong></div>
                     <div class="actuarial-badge-purple" id="calc-outcome-b">$0</div>
@@ -452,15 +454,15 @@
                 document.getElementById('saving-client-name').value = e.target.value;
             });
 
-            // 🟢 [修改 3 & 4] 利用事件委託 (Event Delegation) 綁定最底列細粒「！」Logo 點擊開關機制
+            // 🟢 事件委託：微型「！」號按鈕控制顯示/隱藏實際需繳保費列
             document.addEventListener('click', function(e) {
                 if (e.target && e.target.id === 'toggle-med-cols-btn') {
                     const medTable = document.getElementById('medical-table');
                     medTable.classList.toggle('show-actual');
                     if(medTable.classList.contains('show-actual')) {
-                        e.target.style.background = "#d35400"; // 激活時變成溫暖暗橙色
+                        e.target.style.background = "#d35400"; // 展開變橙色
                     } else {
-                        e.target.style.background = "#e74c3c"; // 預設為警告紅色
+                        e.target.style.background = "#e74c3c"; // 預設紅色
                     }
                 }
             });
@@ -505,10 +507,251 @@
                 'FLEXI_F': 'https://docs.google.com/spreadsheets/d/1G6JirabWJPrTtsdPuzzfyo-D-EPIbbdCM3HvFUW7ZCw/export?format=csv'
             };
 
-            const localBasePremiums = { 'ELITE_0': 15000, 'ELITE_16': 10000, 'ELITE_25': 8000, 'WISE_0': 9000, 'WISE_88': 6500, 'WISE_18': 4500, 'WISE_30': 3500, 'FLEXI_M': 4000, 'FLEXI_F': 5000 };
             let excelPremiumData = null; 
 
-            // 🟢 [修改 1] 真實保費優先下載引擎：透過 AllOrigins Proxy 完美解鎖並注入真實 CSV 數值
+            function openShareModal() {
+                const clientName = document.getElementById('saving-client-name').value.trim() || '專屬客戶';
+                document.getElementById('modal-client-name').innerText = clientName;
+                
+                const activePageId = document.querySelector('.page.active').id;
+                const baseUrl = window.location.href.split('?')[0];
+                const sp = cleanNum(document.getElementById('saving-principal').value);
+                const sa = document.getElementById('saving-age').value;
+                const spl = document.getElementById('saving-plan-select').value;
+                const mra = document.getElementById('med-retirement-age').value;
+                const mle = document.getElementById('med-life-expectancy').value;
+                const msl = document.getElementById('med-adjustment-slider').value;
+                const medPlanDropdown = document.getElementById('med-excel-plan-dropdown').value;
+                
+                const urlParams = `?cn=${encodeURIComponent(clientName)}&sp=${sp}&sa=${sa}&spl=${spl}&mra=${mra}&mle=${mle}&msl=${msl}&mp=${medPlanDropdown}&tab=${activePageId}`;
+                const finalUrl = baseUrl + urlParams;
+
+                document.getElementById('share-url-text').innerText = finalUrl;
+                const qrBox = document.getElementById('qrcode-box');
+                qrBox.innerHTML = `<a href="${finalUrl}" target="_blank"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(finalUrl)}" alt="QR Code"></a>`;
+                document.getElementById('share-modal').style.display = 'flex';
+            }
+
+            document.querySelectorAll('.open-share-btn').forEach(btn => { btn.addEventListener('click', openShareModal); });
+            document.getElementById('close-modal').addEventListener('click', () => { document.getElementById('share-modal').style.display = 'none'; });
+            
+            document.getElementById('copy-link-btn').addEventListener('click', () => {
+                const url = document.getElementById('share-url-text').innerText;
+                navigator.clipboard.writeText(url).then(() => {
+                    const btn = document.getElementById('copy-link-btn');
+                    btn.innerText = "✅ 成功複製！";
+                    setTimeout(() => btn.innerText = "📋 一鍵複製連結發送", 2000);
+                });
+            });
+
+            function loadUrlParams() {
+                const params = new URLSearchParams(window.location.search);
+                if(params.has('cn')) {
+                    const cName = params.get('cn');
+                    document.getElementById('saving-client-name').value = cName;
+                    document.getElementById('med-client-name').value = cName;
+                    document.querySelectorAll('.client-display-name').forEach(el => el.innerText = cName);
+                    
+                    document.getElementById('saving-advisor-card').style.display = 'block';
+                    document.getElementById('med-advisor-card').style.display = 'block';
+                    
+                    document.querySelectorAll('.client-input-zone, .btn-share').forEach(el => el.style.display = 'none');
+                    document.querySelectorAll('.hide-in-client, .control-panel').forEach(el => el.style.display = 'none');
+                }
+                
+                if(params.has('tab')) {
+                    const targetTab = params.get('tab');
+                    document.body.classList.add('client-view-mode');
+                    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                    const pageToShow = document.getElementById(targetTab);
+                    if(pageToShow) pageToShow.classList.add('active');
+                }
+                
+                if(params.has('sp')) {
+                    const spStr = fmtMoney(params.get('sp'));
+                    document.getElementById('saving-principal').value = spStr;
+                    document.getElementById('med-principal').value = spStr;
+                }
+                if(params.has('sa')) {
+                    const saStr = params.get('sa');
+                    document.getElementById('saving-age').value = saStr;
+                    document.getElementById('med-age').value = saStr;
+                }
+                if(params.has('spl')) {
+                    const splStr = params.get('spl');
+                    document.getElementById('saving-plan-select').value = splStr;
+                    document.getElementById('med-plan-select').value = splStr;
+                }
+                if(params.has('mra')) document.getElementById('med-retirement-age').value = params.get('mra');
+                if(params.has('mle')) document.getElementById('med-life-expectancy').value = params.get('mle');
+                if(params.has('msl')) {
+                    document.getElementById('med-adjustment-slider').value = params.get('msl');
+                    document.getElementById('med-slider-val').innerText = parseFloat(params.get('msl')).toFixed(1) + '%';
+                }
+                if(params.has('mp')) {
+                    document.getElementById('med-excel-plan-dropdown').value = params.get('mp');
+                }
+            }
+
+            function getInterpolatedValue(plan, policyYear, multiplier) {
+                const data = schemesData[plan].data;
+                if (data[policyYear]) return data[policyYear] * multiplier;
+                const keys = Object.keys(data).map(Number).sort((a,b) => a-b);
+                if (policyYear <= keys[0]) return data[keys[0]] * multiplier * (policyYear / keys[0]);
+                if (policyYear >= keys[keys.length - 1]) return data[keys[keys.length - 1]] * multiplier;
+                let lower = keys[0], upper = keys[keys.length - 1];
+                for(let i=0; i<keys.length-1; i++) {
+                    if(policyYear >= keys[i] && policyYear <= keys[i+1]) { lower = keys[i]; upper = keys[i+1]; break; }
+                }
+                return (data[lower] + ((policyYear - lower) / (upper - lower)) * (data[upper] - data[lower])) * multiplier;
+            }
+
+            // ================= 頁面 1: 悠享儲蓄表格 =================
+            function renderSavingTable() {
+                const principal = cleanNum(document.getElementById('saving-principal').value) || 200000;
+                const multiplier = principal / basePrincipal;
+                const plan = document.getElementById('saving-plan-select').value;
+                const age = parseInt(document.getElementById('saving-age').value) || 40;
+                const tbody = document.getElementById('saving-table-body');
+                tbody.innerHTML = '';
+                
+                const sd = schemesData[plan];
+                
+                for (let year = 5; year <= 100; year += 5) {
+                    if (age + year > 100) break; 
+                    
+                    let currentAnnuity = year >= sd.startYr ? sd.extract * multiplier : 0;
+                    let totalAnnuity = year >= sd.startYr ? (year - sd.startYr + 1) * currentAnnuity : 0;
+                    let remain = getInterpolatedValue(plan, year, multiplier);
+                    
+                    tbody.innerHTML += `
+                        <tr>
+                            <td class="text-left"><strong>第 ${year} 年</strong> (${age + year}歲)</td>
+                            <td class="c-red">${currentAnnuity > 0 ? '$'+fmtMoney(currentAnnuity) : '--'}</td>
+                            <td class="c-blue">${totalAnnuity > 0 ? '$'+fmtMoney(totalAnnuity) : '--'}</td>
+                            <td class="c-purple">$${fmtMoney(remain)}</td>
+                        </tr>
+                    `;
+                }
+            }
+
+            // ================= 頁面 2: 銀行定存 =================
+            async function initBankEngine() {
+                let baseRate = 0.021;
+                try {
+                    const res = await fetch('https://api.hkma.gov.hk/public/financial-data/retail-banks-deposits-rates?pagesize=1');
+                    const data = await res.json();
+                    if (data?.result?.records?.length > 0) {
+                        baseRate = parseFloat(data.result.records[0].td_3m_aver) / 100;
+                    }
+                } catch (e) {
+                    console.log("連線超時，已啟用系統內置常規牌價");
+                }
+
+                generatedBankRates = {
+                    "富邦銀行": { "1": baseRate-0.001, "3": baseRate+0.002, "6": baseRate+0.002, "9": baseRate+0.002, "12": baseRate+0.003 },
+                    "工銀亞洲": { "1": baseRate-0.002, "3": baseRate+0.0015, "6": baseRate+0.0015, "9": baseRate+0.001, "12": baseRate },
+                    "滙豐銀行": { "1": baseRate-0.003, "3": baseRate+0.0005, "6": baseRate-0.001, "9": baseRate-0.001, "12": baseRate-0.002 },
+                    "中銀香港": { "1": baseRate-0.002, "3": baseRate, "6": baseRate-0.002, "9": baseRate-0.002, "12": baseRate-0.003 },
+                    "恒生銀行": { "1": baseRate-0.003, "3": baseRate+0.0005, "6": baseRate-0.002, "9": baseRate-0.002, "12": baseRate-0.003 },
+                    "渣打銀行": { "1": baseRate-0.004, "3": baseRate, "6": baseRate-0.0015, "9": baseRate-0.0015, "12": baseRate-0.001 },
+                    "南洋商業": { "1": baseRate-0.0025, "3": baseRate+0.001, "6": baseRate+0.003, "9": baseRate+0.0025, "12": baseRate+0.002 },
+                    "上海商業": { "1": baseRate-0.005, "3": baseRate+0.0008, "6": baseRate+0.0008, "9": baseRate-0.001, "12": baseRate-0.0037 },
+                    "星展銀行": { "1": baseRate-0.006, "3": baseRate, "6": baseRate-0.0015, "9": baseRate-0.0015, "12": baseRate-0.0015 },
+                    "東亞銀行": { "1": baseRate-0.004, "3": baseRate, "6": baseRate, "9": baseRate-0.0005, "12": baseRate-0.001 },
+                    "交通銀行": { "1": baseRate-0.003, "3": baseRate+0.002, "6": baseRate+0.0005, "9": baseRate, "12": baseRate-0.001 },
+                    "大眾銀行": { "1": baseRate-0.003, "3": baseRate, "6": baseRate, "9": baseRate+0.0005, "12": baseRate+0.001 },
+                    "招商永隆": { "1": baseRate-0.008, "3": baseRate-0.002, "6": baseRate, "9": baseRate, "12": baseRate+0.0005 },
+                    "建設銀行": { "1": baseRate-0.004, "3": baseRate, "6": baseRate, "9": baseRate-0.001, "12": baseRate-0.001 },
+                    "中信(國際)":{ "1": baseRate+0.0015, "3": baseRate+0.003, "6": baseRate+0.0025, "9": baseRate+0.002, "12": baseRate+0.001 },
+                    "創興銀行": { "1": baseRate-0.003, "3": baseRate+0.0015, "6": baseRate-0.0045, "9": baseRate-0.008, "12": baseRate-0.0115 }
+                };
+                const tbody = document.getElementById('bank-rates-body');
+                tbody.innerHTML = '';
+                Object.keys(generatedBankRates).forEach(bankName => {
+                    const b = generatedBankRates[bankName];
+                    tbody.innerHTML += `<tr>
+                        <td class="text-left"><strong>${bankName}</strong></td>
+                        <td class="text-center">${fmtRate(b['1'])}</td>
+                        <td class="text-center">${fmtRate(b['3'])}</td>
+                        <td class="text-center">${fmtRate(b['6'])}</td>
+                        <td class="text-center">${fmtRate(b['9'])}</td>
+                        <td class="text-center">${fmtRate(b['12'])}</td>
+                    </tr>`;
+                });
+                buildFDRows();
+                renderFDTable(); 
+            }
+
+            function buildFDRows() {
+                const tbody = document.getElementById('fd-table-body');
+                tbody.innerHTML = '';
+                let bankOptions = '';
+                Object.keys(generatedBankRates).forEach(b => { bankOptions += `<option value="${b}">${b}</option>`; });
+                for (let i = 1; i <= 20; i++) {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td class="text-left"><strong># ${i}</strong></td>
+                            <td><input type="text" class="row-principal input-sm" data-manual="false" placeholder="請手動打入"></td>
+                            <td><select class="row-bank select-sm">${bankOptions}</select></td>
+                            <td>
+                                <select class="row-tenor select-sm">
+                                    <option value="1">1 個月</option><option value="3">3 個月</option>
+                                    <option value="6">6 個月</option><option value="9">9 個月</option>
+                                    <option value="12" selected>12 個月</option>
+                                </select>
+                            </td>
+                            <td class="row-rate text-center" style="color:#7f8c8d;">--</td>
+                            <td class="row-interest text-right" style="color:var(--success);">--</td>
+                            <td class="row-balance text-right" style="font-weight:bold; color:var(--bank);" data-val="0">--</td>
+                        </tr>
+                    `;
+                }
+            }
+
+            function renderFDTable() {
+                const rows = document.querySelectorAll('#fd-table-body tr');
+                for(let i = 0; i < rows.length; i++) {
+                    let row = rows[i];
+                    let principalInput = row.querySelector('.row-principal');
+
+                    if (i > 0 && principalInput.dataset.manual !== "true") {
+                        let prevBalance = parseFloat(row.previousElementSibling.querySelector('.row-balance').dataset.val) || 0;
+                        principalInput.value = prevBalance > 0 ? fmtMoney(prevBalance) : '';
+                    }
+
+                    let pValue = cleanNum(principalInput.value);
+                    if (pValue <= 0) {
+                        row.querySelector('.row-rate').innerHTML = '--';
+                        row.querySelector('.row-interest').innerHTML = '--';
+                        row.querySelector('.row-balance').innerHTML = '--';
+                        row.querySelector('.row-balance').dataset.val = 0;
+                        continue;
+                    }
+
+                    let bankName = row.querySelector('.row-bank').value;
+                    let tenorMonths = parseInt(row.querySelector('.row-tenor').value);
+                    let paRate = generatedBankRates[bankName]?.[tenorMonths];
+
+                    if (paRate == null) {
+                        row.querySelector('.row-rate').innerHTML = '<span style="color:var(--danger)">無此年期</span>';
+                        row.querySelector('.row-interest').innerHTML = '--';
+                        row.querySelector('.row-balance').innerHTML = '--';
+                        row.querySelector('.row-balance').dataset.val = 0;
+                        continue;
+                    }
+
+                    row.querySelector('.row-rate').innerHTML = (paRate * 100).toFixed(2) + '%';
+                    let interestMultiplier = tenorMonths / 12;
+                    let intEarned = pValue * paRate * interestMultiplier; 
+                    let balance = pValue + intEarned;
+                    row.querySelector('.row-interest').innerHTML = '+$' + fmtMoney(intEarned);
+                    row.querySelector('.row-balance').innerHTML = '$' + fmtMoney(balance);
+                    row.querySelector('.row-balance').dataset.val = balance;
+                }
+            }
+
+            // 🟢 [核心修復] 雲端實時下載與等待讀取狀態（完美解決逗號 Bug）
             async function fetchMedicalPlanFromCloud(planKey) {
                 const targetUrl = medicalCloudUrls[planKey];
                 if (!targetUrl) return;
@@ -517,25 +760,28 @@
                 const tbody = document.getElementById('medical-table-body');
                 
                 if(tbody) {
-                    tbody.innerHTML = '<tr><td colspan="5" class="text-center" style="padding: 35px; font-weight: 900; color: #0b7285;">🔄 正在連線 A+ 數據庫抓取真實醫療保費...</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center" style="padding: 25px; font-weight: 900; color: #0b7285;">🔄 正在讀取真實醫療保費...</td></tr>';
                 }
                 
                 try {
                     titleLabel.innerText = "🔄 正在同步雲端保費數據中...";
-                    
-                    // 🌟 核心破壁修正：封裝全外網代理，徹底打通 Google Sheet 的真實保費數值
-                    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
-                    const response = await fetch(proxyUrl);
+                    const response = await fetch(targetUrl);
                     if (!response.ok) throw new Error('網絡連線異常');
                     const csvText = await response.text();
                     
                     excelPremiumData = {};
                     const lines = csvText.split(/\r?\n/);
                     lines.forEach(line => {
-                        const columns = line.split(',');
-                        if (columns.length >= 2) {
-                            let ageKey = parseInt(columns[0].trim(), 10);
-                            let premiumVal = parseFloat(columns[1].trim());
+                        // 解決 Google Sheet 大於 999 數字附帶逗號的千位數 CSV 解析 Bug
+                        const firstCommaIdx = line.indexOf(',');
+                        if (firstCommaIdx > -1) {
+                            let ageStr = line.substring(0, firstCommaIdx).trim();
+                            let premiumStr = line.substring(firstCommaIdx + 1).trim();
+                            // 移走所有引號同埋千位數逗號，確保 parseFloat 能正確運算
+                            premiumStr = premiumStr.replace(/["',]/g, '');
+                            
+                            let ageKey = parseInt(ageStr, 10);
+                            let premiumVal = parseFloat(premiumStr);
                             if (!isNaN(ageKey) && !isNaN(premiumVal)) {
                                 excelPremiumData[ageKey] = premiumVal;
                             }
@@ -543,13 +789,14 @@
                     });
                     
                     titleLabel.innerText = "醫保累計總保費（已實時同步 A+ 精算庫）";
-                    renderMedicalTable(); // 🛑 保證加載成功後才觸發動態計算
+                    // 確保讀取成功才正式渲染表格
+                    renderMedicalTable(); 
                     
                 } catch (error) {
                     console.error('AVA 雲端同步失敗:', error);
-                    titleLabel.innerText = "⚠️ 雲端連線超時，已啟用系統自動內置基準保費";
+                    titleLabel.innerText = "⚠️ 雲端保費同步超時，已啟用系統自動內置基準保費";
                     excelPremiumData = null; 
-                    renderMedicalTable(); 
+                    renderMedicalTable();
                 }
             }
 
@@ -587,8 +834,7 @@
                     if (excelPremiumData && excelPremiumData[targetAge] !== undefined) {
                         currentBase = excelPremiumData[targetAge];
                     } else {
-                        let fallbackBase = localBasePremiums[medExcelPlan] || 8000;
-                        currentBase = fallbackBase * (1 + Math.floor(totalPolicyYear / 5) * 0.12);
+                        currentBase = 8000 * (1 + Math.floor(totalPolicyYear / 5) * 0.12);
                     }
 
                     let adjustedPremium = currentBase * Math.pow(1 + adjRate, totalPolicyYear);
@@ -606,7 +852,6 @@
                         finalDefenseBalance = remainingDefenseBalance;
                     }
 
-                    // 🟢 [修改 2] 表格歲數以 5 的倍數精簡跳格顯示 (完美留存起點和終點)
                     if (targetAge % 5 === 0 || targetAge === retirementAge || targetAge === lifeExpectancy) {
                         tbody.innerHTML += `
                             <tr>
@@ -620,7 +865,7 @@
                     }
                 }
 
-                // 🟢 [修改 3 & 4] 表格累積最底列：深色高亮總結列，並嵌入細粒精緻嘅圓形「！」號 Logo
+                // 🟢 加入表格最底部總結列與「！」號微型開關
                 tbody.innerHTML += `
                     <tr style="background-color: #edf2f7; border-top: 3px solid #0b7285;">
                         <td class="text-left" style="font-weight: 900; color: #0b7285;">
@@ -635,7 +880,6 @@
 
                 document.getElementById('lbl-sum-adjusted').innerText = '$' + fmtMoney(sumAdjusted);
                 
-                // 🟢 [修改 3] 底部提前預備計算程式：(累積減輕保費壓力 + 醫保防線結餘最底部餘額 - 累計實繳總額 - 本金)
                 const outcomeA = sumAdjusted; 
                 const outcomeB = totalAnnuitySum + finalDefenseBalance - cumulativeActualPay - medPrincipal; 
                 
@@ -643,7 +887,11 @@
                 document.getElementById('calc-outcome-b').innerText = '$' + fmtMoney(outcomeB);
             }
 
-            // ================= 網頁其餘綁定聯動 =================
+            // ================= 綁定所有聯動 =================
+            document.getElementById('med-excel-plan-dropdown').addEventListener('change', function() {
+                fetchMedicalPlanFromCloud(this.value);
+            });
+
             setupCommaInput('saving-principal', function(val) {
                 document.getElementById('med-principal').value = fmtMoney(val);
                 renderSavingTable(); renderMedicalTable();
