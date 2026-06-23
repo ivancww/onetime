@@ -16,8 +16,8 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <!-- 🏷️ v2.3.0 精算公式修正與介面優化版 -->
-    <title>v2.3.0 | AVA 豐盛人生與財富守護導航系統</title>
+    <!-- 🏷️ v2.4.0 真實保費優先載入與極簡顯示版 -->
+    <title>v2.4.0 | AVA 豐盛人生與財富守護導航系統</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
@@ -81,9 +81,8 @@
         .actuarial-label { display: flex; align-items: center; gap: 6px; }
         .actuarial-badge-red { background: #fde8e8; color: var(--danger); padding: 4px 12px; border-radius: 6px; font-weight: 900; font-size: 1.1rem; }
         .actuarial-badge-purple { background: #f3e8ff; color: var(--purple); padding: 4px 12px; border-radius: 6px; font-weight: 900; font-size: 1.1rem; }
-        .actuarial-highlight-box { background: linear-gradient(135deg, #fff9db, #fff3bf); border: 1px dashed #fab005; border-radius: 10px; padding: 15px; margin-top: 20px; text-align: center; }
 
-        .table-responsive { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); margin-top: 15px; }
+        .table-responsive { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); margin-top: 5px; }
         table { width: 100%; border-collapse: collapse; white-space: nowrap; font-size: 0.95rem; }
         th, td { padding: 12px 15px; text-align: right; border-bottom: 1px solid var(--border); }
         th { background: #f7fafc; color: #4a5568; font-weight: 700; }
@@ -138,7 +137,7 @@
 
     <!-- 頂部精緻窄版導航列 -->
     <header class="app-header">
-        <div class="app-title">v2.3.0 | AVA 豐盛導航系統</div>
+        <div class="app-title">v2.4.0 | AVA 豐盛導航系統</div>
     </header>
 
     <div class="container">
@@ -306,7 +305,7 @@
                 </div>
                 
                 <div class="input-group" style="grid-column: span auto; margin-top: 5px;">
-                    <label style="color: var(--medical);">👑 選擇 AIA 醫保專屬計劃（自動計算基準保費）</label>
+                    <label style="color: var(--medical);">👑 選擇 AIA 醫保專屬計劃</label>
                     <select id="med-excel-plan-dropdown" style="border-color: var(--medical); background: #fdfdfd;">
                         <option value="ELITE_0" selected>👑 尊顯計劃 (自付額 HK$ 0)</option>
                         <option value="ELITE_16">👑 尊顯計劃 (自付額 HK$ 16,000)</option>
@@ -331,11 +330,9 @@
                 </div>
             </div>
 
-            <!-- 一鍵顯示/隱藏實繳保費按鈕 -->
-            <div style="text-align: right; margin-bottom: 5px;">
-                <button class="btn btn-outline" id="toggle-med-cols-btn" style="width: auto; padding: 8px 15px; font-size: 0.9rem; margin-bottom: 0; border-color: var(--medical); color: var(--medical);">
-                    👁️ 顯示實際需繳保費 & 總額
-                </button>
+            <!-- 🟢 低調顯示開關 -->
+            <div style="text-align: right; margin-bottom: 5px; padding-right: 5px;">
+                <span id="toggle-med-cols-btn" style="cursor: pointer; background: #95a5a6; color: white; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.15);" title="顯示/隱藏實際保費">?</span>
             </div>
 
             <div class="table-responsive">
@@ -346,7 +343,6 @@
                             <th style="color: var(--danger); text-align: right;">預計醫療保費</th>
                             <th style="color: #2980b9; text-align: right;">減輕保費壓力</th>
                             <th class="col-actual" style="color: #d35400; text-align: right;">實際醫保保費</th>
-                            <th class="col-actual" style="color: #c0392b; text-align: right;">累計實繳總額</th>
                             <th style="color: var(--purple); text-align: right;">醫保防線結餘</th>
                         </tr>
                     </thead>
@@ -356,23 +352,16 @@
                 </table>
             </div>
 
-            <!-- ⚖️ 數據與計算方法（精算邏輯）動態看板 -->
-            <div class="actuarial-card">
+            <!-- ⚖️ 極簡精算對比 -->
+            <div class="actuarial-card" style="margin-top: 15px;">
                 <div class="actuarial-title">⚖️ AVA 醫保防線精算對比</div>
-                
                 <div class="actuarial-row">
                     <div class="actuarial-label">🔴 <strong>沒有提前預備下 - 總付出金額</strong></div>
                     <div class="actuarial-badge-red" id="calc-outcome-a">-$0</div>
                 </div>
-                
-                <div class="actuarial-row" style="margin-top: 18px;">
+                <div class="actuarial-row" style="margin-bottom: 0;">
                     <div class="actuarial-label">🔮 <strong>提前預備下 - 淨結餘</strong></div>
                     <div class="actuarial-badge-purple" id="calc-outcome-b">$0</div>
-                </div>
-                
-                <div class="actuarial-highlight-box">
-                    <span style="font-size: 0.95rem; font-weight: bold; color: #d35400; display: block; margin-bottom: 5px;">🏆 總淨效益</span>
-                    <span style="font-size: 2.2rem; font-weight: 900; color: #27ae60;" id="calc-net-benefit">$0</span>
                 </div>
             </div>
 
@@ -475,18 +464,16 @@
                 document.getElementById('saving-client-name').value = e.target.value;
             });
 
-            // 顯示/隱藏實際需繳保費
+            // 🟢 MOD 4: 顯示/隱藏實際需繳保費及轉換按鈕顏色
             const toggleMedBtn = document.getElementById('toggle-med-cols-btn');
             const medTable = document.getElementById('medical-table');
             if(toggleMedBtn) {
                 toggleMedBtn.addEventListener('click', function() {
                     medTable.classList.toggle('show-actual');
                     if(medTable.classList.contains('show-actual')) {
-                        this.innerText = "🙈 隱藏實際需繳保費 & 總額";
-                        this.style.background = "#fffaf0";
+                        this.style.background = "#d35400"; // 變成醒目橙色
                     } else {
-                        this.innerText = "👁️ 顯示實際需繳保費 & 總額";
-                        this.style.background = "transparent";
+                        this.style.background = "#95a5a6"; // 變回灰色
                     }
                 });
             }
@@ -531,7 +518,6 @@
                 'FLEXI_F': 'https://docs.google.com/spreadsheets/d/1G6JirabWJPrTtsdPuzzfyo-D-EPIbbdCM3HvFUW7ZCw/export?format=csv'
             };
 
-            // 🟢 MOD 6: 提供醫保保險選項本地基準，確保轉 Plan 必有聯動
             const localBasePremiums = {
                 'ELITE_0': 15000,
                 'ELITE_16': 10000,
@@ -654,10 +640,8 @@
                 
                 const sd = schemesData[plan];
                 
-                // 🟢 MOD 1: 累積表安全執行至 100 歲為止
                 for (let year = 5; year <= 100; year += 5) {
-                    if (age + year > 100) break; // 歲數到達 100 歲即停止計算與顯示
-                    
+                    if (age + year > 100) break;
                     let currentAnnuity = year >= sd.startYr ? sd.extract * multiplier : 0;
                     let totalAnnuity = year >= sd.startYr ? (year - sd.startYr + 1) * currentAnnuity : 0;
                     let remain = getInterpolatedValue(plan, year, multiplier);
@@ -789,11 +773,19 @@
                 }
             }
 
-            // 雲端實時下載
+            // 🟢 MOD 1: 雲端實時下載與等待讀取狀態
             async function fetchMedicalPlanFromCloud(planKey) {
                 const targetUrl = medicalCloudUrls[planKey];
                 if (!targetUrl) return;
+                
                 const titleLabel = document.getElementById('med-summary-label-title');
+                const tbody = document.getElementById('medical-table-body');
+                
+                // 表格先顯示 Loading
+                if(tbody) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center" style="padding: 25px; font-weight: 900; color: #0b7285;">🔄 正在連線 A+ 讀取真實醫療保費...</td></tr>';
+                }
+                
                 try {
                     titleLabel.innerText = "🔄 正在同步雲端保費數據中...";
                     const response = await fetch(targetUrl);
@@ -812,13 +804,15 @@
                             }
                         }
                     });
+                    
                     titleLabel.innerText = "醫保累計總保費（已實時同步 A+ 精算庫）";
-                    renderMedicalTable(); 
+                    renderMedicalTable(); // 讀取成功才正式渲染表格
+                    
                 } catch (error) {
                     console.error('AVA 雲端同步失敗:', error);
                     titleLabel.innerText = "⚠️ 雲端保費同步超時，已啟用系統自動內置基準保費";
                     excelPremiumData = null; 
-                    renderMedicalTable();
+                    renderMedicalTable(); // 讀取失敗才用 fallback 渲染表格
                 }
             }
 
@@ -842,13 +836,11 @@
                 
                 const retirementPolicyYear = retirementAge - currentAge;
                 
-                // 計算容器
-                let sumAdjusted = 0; // 總保費
-                let totalAnnuitySum = 0; // 累積減輕保費壓力 (提取年金總和)
-                let cumulativeActualPay = 0; // 累計實繳總額
-                let finalDefenseBalance = 0; // 醫保防線結餘最底部餘額
+                let sumAdjusted = 0; 
+                let totalAnnuitySum = 0; 
+                let cumulativeActualPay = 0; 
+                let finalDefenseBalance = 0; 
 
-                // 精算引擎：逐年運算以確保累加正確
                 for (let targetAge = retirementAge; targetAge <= lifeExpectancy; targetAge++) {
                     let progressYear = targetAge - retirementAge;
                     let totalPolicyYear = retirementPolicyYear + progressYear;
@@ -858,7 +850,6 @@
                     if (excelPremiumData && excelPremiumData[targetAge] !== undefined) {
                         currentBase = excelPremiumData[targetAge];
                     } else {
-                        // 🟢 MOD 6: 若 CSV 失效，套用本地指定計劃基準，保證有自動計算連動
                         let fallbackBase = localBasePremiums[medExcelPlan] || 8000;
                         currentBase = fallbackBase * (1 + Math.floor(totalPolicyYear / 5) * 0.12);
                     }
@@ -870,7 +861,6 @@
                     let actualPay = adjustedPremium - currentAnnuity;
                     if (actualPay < 0) actualPay = 0; 
                     
-                    // 逐年累加
                     cumulativeActualPay += actualPay;
                     sumAdjusted += adjustedPremium;
                     totalAnnuitySum += currentAnnuity;
@@ -879,7 +869,6 @@
                         finalDefenseBalance = remainingDefenseBalance;
                     }
 
-                    // 🟢 MOD 2: 畫面渲染邏輯 —— 歲數以 5 的倍數顯示 (保留起步及終點)
                     if (targetAge % 5 === 0 || targetAge === retirementAge || targetAge === lifeExpectancy) {
                         tbody.innerHTML += `
                             <tr>
@@ -887,29 +876,35 @@
                                 <td class="c-red">$${fmtMoney(adjustedPremium)}</td>
                                 <td class="c-blue">${currentAnnuity > 0 ? '+$'+fmtMoney(currentAnnuity) : '$0'}</td>
                                 <td class="col-actual" style="color:#d35400; font-weight:bold;">$${fmtMoney(actualPay)}</td>
-                                <td class="col-actual" style="color:#c0392b; font-weight:bold;">$${fmtMoney(cumulativeActualPay)}</td>
                                 <td class="c-purple">$${fmtMoney(remainingDefenseBalance)}</td>
                             </tr>
                         `;
                     }
                 }
 
+                // 🟢 MOD 3: 增加最底部總結列
+                tbody.innerHTML += `
+                    <tr style="background-color: #e3fafc; border-top: 3px solid #0b7285;">
+                        <td class="text-left" style="font-weight: 900; color: #0b7285;">📊 總計累額</td>
+                        <td class="text-right" style="color: #4a5568;">--</td>
+                        <td class="text-right" style="color: #2980b9; font-weight: 900;">$${fmtMoney(totalAnnuitySum)}</td>
+                        <td class="col-actual text-right" style="color: #c0392b; font-weight: 900;">$${fmtMoney(cumulativeActualPay)}</td>
+                        <td class="text-right" style="color: #4a5568;">--</td>
+                    </tr>
+                `;
+
                 document.getElementById('lbl-sum-adjusted').innerText = '$' + fmtMoney(sumAdjusted);
                 
-                // 🟢 MOD 3: 底部公式修正 = (累積減輕保費壓力 + 醫保防線結餘最底部餘額 - 累計實繳總額 - 本金)
                 const outcomeA = sumAdjusted; 
                 const outcomeB = totalAnnuitySum + finalDefenseBalance - cumulativeActualPay - medPrincipal; 
-                const netBenefit = outcomeA + outcomeB; 
                 
                 document.getElementById('calc-outcome-a').innerText = '-$' + fmtMoney(outcomeA);
                 document.getElementById('calc-outcome-b').innerText = '$' + fmtMoney(outcomeB);
-                document.getElementById('calc-net-benefit').innerText = '$' + fmtMoney(netBenefit);
             }
 
             // ================= 綁定所有聯動 =================
+            // 🟢 MOD 1: 下拉選單只觸發讀取，不執行預先渲染
             document.getElementById('med-excel-plan-dropdown').addEventListener('change', function() {
-                // 就算 Cloud Fetch 慢，也先利用本地 defaultBase 重新渲染確保即時體驗
-                renderMedicalTable();
                 fetchMedicalPlanFromCloud(this.value);
             });
 
