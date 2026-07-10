@@ -2,19 +2,17 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="AVA 導航">
     <link rel="apple-touch-icon" href="./icon-512.png">
     <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
-    
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <title>v3.1.0 | AVA 豐盛人生與財富守護導航系統</title>
+    <title>v3.2.0 | AVA 豐盛人生與財富守護導航系統</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
@@ -32,7 +30,6 @@
         * { box-sizing: border-box; }
         body { font-family: 'Noto Sans TC', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; padding-bottom: 50px; padding-top: 50px; overscroll-behavior-y: none; }
 
-        /* 頂部導航列 */
         .app-header { position: fixed; top: 0; left: 0; right: 0; background-color: #0A3D91; color: white; height: 50px; padding: 0 20px; padding-top: env(safe-area-inset-top, 0px); box-shadow: 0 2px 8px rgba(0,0,0,0.1); z-index: 1000; display: flex; align-items: center; justify-content: center; }
         .app-title { font-size: 0.95rem; font-weight: 700; letter-spacing: 0.5px; text-align: center; }
 
@@ -72,13 +69,16 @@
         .c-blue { color: #2980b9 !important; font-weight: bold; }
         .c-purple { color: var(--purple) !important; font-weight: 900; font-size: 1.05rem; }
 
-        /* 🟢 醫保實繳隱藏欄位與總結列控制 */
+        /* 🟢 動態隱藏欄位控制 */
         .med-table .col-actual { display: none; }
         .med-table.show-actual .col-actual { display: table-cell; animation: fadeIn 0.3s ease; background-color: #fffaf0; }
+        
+        .saving-table .col-interest { display: none; }
+        .saving-table.show-interest .col-interest { display: table-cell; animation: fadeIn 0.3s ease; background-color: #fffaf0; color: #d35400; font-weight: bold; }
+
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* 🟢 微型開關標誌樣式 */
-        .mini-toggle-logo { cursor: pointer; background: #e74c3c; color: white; border-radius: 50%; width: 17px; height: 17px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 900; transition: 0.2s; vertical-align: middle; margin-left: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.15); font-family: monospace; }
+        .mini-toggle-logo { cursor: pointer; color: white; border-radius: 50%; width: 17px; height: 17px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 900; transition: 0.2s; vertical-align: middle; box-shadow: 0 1px 4px rgba(0,0,0,0.15); font-family: monospace; }
         .mini-help-logo { cursor: pointer; background: #3498db; color: white; border-radius: 50%; width: 17px; height: 17px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 900; transition: 0.2s; vertical-align: middle; margin-right: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.15); font-family: monospace; }
         .formula-box { display: none; background: #f1f5f9; padding: 12px; font-size: 0.85rem; border-left: 3px solid var(--purple); color: #2c3e50; font-weight: bold; margin-top: 10px; border-radius: 6px; animation: fadeIn 0.3s ease; }
 
@@ -101,7 +101,7 @@
 <body>
 
     <header class="app-header">
-        <div class="app-title">v3.0.0 | AVA 豐盛導航系統</div>
+        <div class="app-title">v3.2.0 | AVA 豐盛導航系統</div>
     </header>
 
     <div class="container">
@@ -130,17 +130,18 @@
             </div>
 
             <div class="table-responsive">
-                <table>
+                <table id="saving-table" class="saving-table">
                     <thead>
                         <tr>
                             <th class="text-left">保單年度 (年齡)</th>
-                            <th style="color: var(--danger);">每年提取長糧(年金)</th>
-                            <th style="color: #2980b9;">累計已取長糧(年金)</th>
-                            <th style="color: var(--purple);">悠享年金結餘</th>
+                            <th style="color: var(--danger);">每年領取長糧(年金)</th>
+                            <th style="color: #2980b9;">累積領取長糧(年金)</th>
+                            <th style="color: var(--purple);">悠享年金結餘 <span class="mini-toggle-logo" id="toggle-interest-btn" style="background:#f39c12; margin-left:4px;" title="點擊顯示/隱藏年息">%</span></th>
+                            <th class="col-interest" style="color: #d35400;">年息</th>
                         </tr>
                     </thead>
                     <tbody id="saving-table-body">
-                        </tbody>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -154,15 +155,11 @@
                     <thead>
                         <tr style="position: sticky; top:0; background:#f7fafc; z-index: 5; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
                             <th class="text-left">銀行名稱</th>
-                            <th class="text-center">1個月</th>
-                            <th class="text-center">3個月</th>
-                            <th class="text-center">6個月</th>
-                            <th class="text-center">9個月</th>
-                            <th class="text-center">12個月</th>
+                            <th class="text-center">1個月</th><th class="text-center">3個月</th><th class="text-center">6個月</th><th class="text-center">9個月</th><th class="text-center">12個月</th>
                         </tr>
                     </thead>
                     <tbody id="bank-rates-body">
-                        </tbody>
+                    </tbody>
                 </table>
             </div>
 
@@ -175,21 +172,17 @@
                         <tr>
                             <th class="text-left" style="width: 70px;">次數</th>
                             <th style="min-width: 150px; text-align: center; color: var(--bank);">投入本金 ($)</th>
-                            <th style="min-width: 140px;">選擇續辦銀行</th>
-                            <th style="min-width: 110px;">定存年期</th>
-                            <th>該期年利率</th>
-                            <th>期內真實收息</th>
-                            <th style="color: var(--bank);">到期後結餘</th>
+                            <th style="min-width: 140px;">選擇續辦銀行</th><th style="min-width: 110px;">定存年期</th>
+                            <th>該期年利率</th><th>期內真實收息</th><th style="color: var(--bank);">到期後結餘</th>
                         </tr>
                     </thead>
                     <tbody id="fd-table-body">
-                        </tbody>
+                    </tbody>
                 </table>
             </div>
             
             <div class="warm-tip">
-                <strong>⚠️ 時間、人力及行政成本提示：</strong><br>
-                不斷轉換銀行及定存年期去追逐息差，您需要親自付出龐大的時間與心力去格價、開戶及處理轉帳手續。相比之下，儲蓄方案只需設立一次，即可一勞永逸，全自動為您終身滾存。
+                <strong>⚠️ 時間、人力及行政成本提示：</strong><br>不斷轉換銀行及定存年期去追逐息差，您需要親自付出龐大的時間與心力去格價、開戶及處理轉帳手續。相比之下，儲蓄方案只需設立一次，即可一勞永逸，全自動為您終身滾存。
             </div>
         </div>
 
@@ -213,6 +206,17 @@
                     <label>預期壽命 (歲)</label>
                     <input type="number" id="med-life-expectancy" value="85" min="65" max="110">
                 </div>
+                
+                <div class="input-group" style="grid-column: span auto;">
+                    <label style="color: #2980b9;">🌸 聯動儲蓄：提取方案</label>
+                    <select id="med-saving-plan-select" style="border-color: #2980b9; background: #fdfdfd;">
+                        <option value="1year 4%">方案 A：第 1 年起提取年金 (4%)</option>
+                        <option value="3year 5%" selected>方案 B：第 3 年起提取年金 (5%)</option>
+                        <option value="5year 6%">方案 C：第 5 年起提取年金 (6%)</option>
+                        <option value="自動滾存">方案 D：全自動滾存 (歲月純增值)</option>
+                    </select>
+                </div>
+
                 <div class="input-group" style="grid-column: span auto;">
                     <label style="color: var(--medical);">👑 選擇 AIA 醫保專屬計劃 (雲端實時讀取)</label>
                     <select id="med-excel-plan-dropdown" style="border-color: var(--medical); background: #fdfdfd;">
@@ -248,18 +252,16 @@
                         </tr>
                     </thead>
                     <tbody id="medical-table-body">
-                        </tbody>
+                    </tbody>
                 </table>
             </div>
 
             <div class="actuarial-card" style="margin-top: 15px;">
                 <div class="actuarial-title">⚖️ AVA 醫保防線精算對比</div>
-                
                 <div class="actuarial-row">
                     <div class="actuarial-label">🔴 <strong>沒有提前預備下 - 總付出金額</strong></div>
                     <div class="actuarial-badge-red" id="calc-outcome-a">-$0</div>
                 </div>
-                
                 <div class="actuarial-row" style="margin-bottom: 0;">
                     <div class="actuarial-label">
                         <span class="mini-help-logo" id="toggle-formula-btn" title="點擊檢視精算公式">?</span>
@@ -267,7 +269,6 @@
                     </div>
                     <div class="actuarial-badge-purple" id="calc-outcome-b">$0</div>
                 </div>
-                
                 <div id="formula-explanation-block" class="formula-box">
                     🧮 淨結餘計算邏輯：<br>(累積減輕保費壓力總額 + 醫保防線結餘最底部餘額 - 實際醫保總額 - 本金)
                 </div>
@@ -281,23 +282,15 @@
     </div>
 
     <div class="nav-toggle-bar" id="toggle-nav-bar">▲ 顯示導航選單</div>
-
     <div class="bottom-nav" id="popup-nav">
-        <div class="nav-btn active" data-target="saving-page">
-            <span class="icon">📊</span><span>悠享儲蓄</span>
-        </div>
-        <div class="nav-btn" data-target="fd-page">
-            <span class="icon">🏛️</span><span>定存效果</span>
-        </div>
-        <div class="nav-btn" data-target="medical-page">
-            <span class="icon">🩺</span><span>醫保防線</span>
-        </div>
+        <div class="nav-btn active" data-target="saving-page"><span class="icon">📊</span><span>悠享儲蓄</span></div>
+        <div class="nav-btn" data-target="fd-page"><span class="icon">🏛️</span><span>定存效果</span></div>
+        <div class="nav-btn" data-target="medical-page"><span class="icon">🩺</span><span>醫保防線</span></div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             
-            // ================= 1. 導航與介面微控制 =================
             const toggleBar = document.getElementById('toggle-nav-bar');
             const popupNav = document.getElementById('popup-nav');
             
@@ -327,13 +320,31 @@
                 });
             });
 
-            // 🟢 點擊事件委託：微型「！」與「？」按鈕控制
+            // 🟢 整行點擊與微型「？」「！」按鈕控制
             document.addEventListener('click', function(e) {
-                if (e.target && e.target.id === 'toggle-med-cols-btn') {
+                if (e.target && (e.target.id === 'toggle-med-totals-row' || e.target.closest('#toggle-med-totals-row'))) {
+                    const totalRow = document.getElementById('med-total-values-row');
                     const medTable = document.getElementById('medical-table');
-                    medTable.classList.toggle('show-actual');
-                    e.target.style.background = medTable.classList.contains('show-actual') ? "#d35400" : "#e74c3c";
+                    const icon = document.getElementById('totals-icon');
+                    
+                    if (totalRow.style.display === 'none') {
+                        totalRow.style.display = 'table-row';
+                        medTable.classList.add('show-actual');
+                        if(icon) icon.style.background = "#d35400";
+                    } else {
+                        totalRow.style.display = 'none';
+                        medTable.classList.remove('show-actual');
+                        if(icon) icon.style.background = "#e74c3c";
+                    }
                 }
+                
+                // 悠享頁年息隱藏開關
+                if (e.target && e.target.id === 'toggle-interest-btn') {
+                    const savingTable = document.getElementById('saving-table');
+                    savingTable.classList.toggle('show-interest');
+                    e.target.style.background = savingTable.classList.contains('show-interest') ? "#d35400" : "#f39c12";
+                }
+
                 if (e.target && e.target.id === 'toggle-formula-btn') {
                     const fBlock = document.getElementById('formula-explanation-block');
                     if (fBlock.style.display === 'none' || fBlock.style.display === '') {
@@ -364,16 +375,13 @@
                 });
             }
 
-            // ================= 2. 定期存款引擎 =================
             let generatedBankRates = {};
             async function initBankEngine() {
                 let baseRate = 0.021;
                 try {
                     const res = await fetch('https://api.hkma.gov.hk/public/financial-data/retail-banks-deposits-rates?pagesize=1');
                     const data = await res.json();
-                    if (data?.result?.records?.length > 0) {
-                        baseRate = parseFloat(data.result.records[0].td_3m_aver) / 100;
-                    }
+                    if (data?.result?.records?.length > 0) baseRate = parseFloat(data.result.records[0].td_3m_aver) / 100;
                 } catch (e) { console.log("連線超時，使用內置基準利率"); }
 
                 generatedBankRates = {
@@ -401,10 +409,8 @@
                     let r = generatedBankRates[name];
                     tbody.innerHTML += `<tr>
                         <td class="text-left"><strong>${name}</strong></td>
-                        <td class="text-center">${(r['1']*100).toFixed(2)}%</td>
-                        <td class="text-center">${(r['3']*100).toFixed(2)}%</td>
-                        <td class="text-center">${(r['6']*100).toFixed(2)}%</td>
-                        <td class="text-center">${(r['9']*100).toFixed(2)}%</td>
+                        <td class="text-center">${(r['1']*100).toFixed(2)}%</td><td class="text-center">${(r['3']*100).toFixed(2)}%</td>
+                        <td class="text-center">${(r['6']*100).toFixed(2)}%</td><td class="text-center">${(r['9']*100).toFixed(2)}%</td>
                         <td class="text-center">${(r['12']*100).toFixed(2)}%</td>
                     </tr>`;
                 }
@@ -476,7 +482,6 @@
             });
             document.getElementById('fd-table-body').addEventListener('change', renderFDTable);
 
-            // ================= 3. 雲端 CSV 數據抓取引擎 =================
             const SAVING_SHEET_ID = '1-QG1tnH0iTYLAzweJ6Gvj5JDN5p1YKIq9IONyvVIo4U';
             const MEDICAL_SHEET_ID = '1G6JirabWJPrTtsdPuzzfyo-D-EPIbbdCM3HvFUW7ZCw';
             
@@ -485,7 +490,6 @@
             let cacheSaving = {};
             let cacheMedical = {};
 
-            // 防彈 CSV 解析器 (專門處理千位數逗號與引號)
             function parseCSV(str) {
                 let arr = [], row = [], col = '', quote = false;
                 for (let i = 0; i < str.length; i++) {
@@ -509,12 +513,11 @@
                 return parseCSV(text);
             }
 
-            // 讀取儲蓄雲端資料
             async function loadSavingData(planName) {
                 if (cacheSaving[planName]) return cacheSaving[planName];
                 const rows = await fetchSheet(SAVING_SHEET_ID, planName);
                 let parsed = [];
-                for (let i = 1; i < rows.length; i++) { // 跳過標題行
+                for (let i = 1; i < rows.length; i++) { 
                     if (rows[i].length >= 3) {
                         let yr = parseInt(rows[i][0].replace(/,/g, ''));
                         let rate = parseFloat(rows[i][1].replace(/,/g, ''));
@@ -526,7 +529,6 @@
                 return parsed;
             }
 
-            // 讀取醫保雲端資料
             async function loadMedicalData(planName) {
                 if (cacheMedical[planName]) return cacheMedical[planName];
                 const rows = await fetchSheet(MEDICAL_SHEET_ID, planName);
@@ -534,15 +536,13 @@
                 for (let i = 1; i < rows.length; i++) {
                     if (rows[i].length >= 2) {
                         let age = parseInt(rows[i][0].replace(/,/g, ''));
-                        let premium = parseFloat(rows[i][1].replace(/"|,/g, '')); // 徹底清除非數字字符
+                        let premium = parseFloat(rows[i][1].replace(/"|,/g, '')); 
                         if (!isNaN(age) && !isNaN(premium)) parsed[age] = premium;
                     }
                 }
                 cacheMedical[planName] = parsed;
                 return parsed;
             }
-
-            // ================= 4. 動態渲染與精算邏輯 =================
 
             function getInterpolatedSavingMult(year) {
                 if (globalSavingData.length === 0) return 0;
@@ -568,8 +568,7 @@
                 const savingPlan = document.getElementById('saving-plan-select').value;
                 const medicalPlan = document.getElementById('med-excel-plan-dropdown').value;
                 
-                // UI Loading 狀態
-                document.getElementById('saving-table-body').innerHTML = '<tr><td colspan="4" class="text-center">🔄 正在連線 A+ 儲蓄庫...</td></tr>';
+                document.getElementById('saving-table-body').innerHTML = '<tr><td colspan="5" class="text-center">🔄 正在連線 A+ 儲蓄庫...</td></tr>';
                 document.getElementById('medical-table-body').innerHTML = '<tr><td colspan="5" class="text-center">🔄 正在連線 A+ 醫保庫...</td></tr>';
 
                 try {
@@ -580,7 +579,7 @@
                     renderMedicalTable();
                 } catch(e) {
                     console.error("雲端讀取失敗", e);
-                    document.getElementById('saving-table-body').innerHTML = '<tr><td colspan="4" class="text-center" style="color:red;">⚠️ 讀取失敗，請檢查 Google Sheet 權限</td></tr>';
+                    document.getElementById('saving-table-body').innerHTML = '<tr><td colspan="5" class="text-center" style="color:red;">⚠️ 讀取失敗，請檢查 Google Sheet 權限</td></tr>';
                     document.getElementById('medical-table-body').innerHTML = '<tr><td colspan="5" class="text-center" style="color:red;">⚠️ 讀取失敗，請檢查 Google Sheet 權限</td></tr>';
                 }
             }
@@ -590,20 +589,45 @@
                 tbody.innerHTML = '';
                 const principal = cleanNum(document.getElementById('saving-principal').value) || 200000;
                 const startAge = parseInt(document.getElementById('saving-age').value) || 40;
+                const savingPlanSelect = document.getElementById('saving-plan-select').value;
+                const isAutoRoll = savingPlanSelect === '自動滾存';
                 
                 let startExtractYear = 999;
                 if (globalSavingData.length > 0 && globalSavingData[0].rate > 0) {
-                    if (savingPlanSelect.value.includes("1year")) startExtractYear = 1;
-                    else if (savingPlanSelect.value.includes("3year")) startExtractYear = 3;
-                    else if (savingPlanSelect.value.includes("5year")) startExtractYear = 5;
+                    if (savingPlanSelect.includes("1year")) startExtractYear = 1;
+                    else if (savingPlanSelect.includes("3year")) startExtractYear = 3;
+                    else if (savingPlanSelect.includes("5year")) startExtractYear = 5;
                 }
 
-                for (let year = 5; year <= 100; year += 5) {
+                // 🟢 第 5 至 20 年逐年顯示，20 年後每 5 年跳格
+                const displayYears = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100];
+                
+                let prevBalance = principal;
+                let prevYear = 0;
+
+                for (let i = 0; i < displayYears.length; i++) {
+                    let year = displayYears[i];
                     if (startAge + year > 100) break;
+                    
                     let rate = getSavingRate();
                     let currentAnnuity = year >= startExtractYear ? principal * rate : 0;
                     let cumulativeAnnuity = year >= startExtractYear ? currentAnnuity * (year - startExtractYear + 1) : 0;
                     let balance = principal * getInterpolatedSavingMult(year);
+                    
+                    let interestStr = '--';
+                    if (isAutoRoll) {
+                        if (year === 5) {
+                            let interest = (balance - principal) / principal;
+                            interestStr = (interest * 100).toFixed(2) + '%';
+                        } else if (year <= 20) {
+                            let interest = (balance - prevBalance) / prevBalance;
+                            interestStr = (interest * 100).toFixed(2) + '%';
+                        } else {
+                            let yearDiff = year - prevYear;
+                            let interest = ((balance - prevBalance) / prevBalance) / yearDiff;
+                            interestStr = (interest * 100).toFixed(2) + '%';
+                        }
+                    }
 
                     tbody.innerHTML += `
                         <tr>
@@ -611,8 +635,12 @@
                             <td class="c-red">${currentAnnuity > 0 ? '$'+fmtMoney(currentAnnuity) : '--'}</td>
                             <td class="c-blue">${cumulativeAnnuity > 0 ? '$'+fmtMoney(cumulativeAnnuity) : '--'}</td>
                             <td class="c-purple">$${fmtMoney(balance)}</td>
+                            <td class="col-interest text-right">${interestStr}</td>
                         </tr>
                     `;
+                    
+                    prevBalance = balance;
+                    prevYear = year;
                 }
             }
 
@@ -643,7 +671,6 @@
                     let totalPolicyYear = retirementPolicyYear + progressYear;
                     if (totalPolicyYear <= 0) totalPolicyYear = 1;
 
-                    // 讀取真實雲端保費
                     let currentBase = globalMedicalData[targetAge] || 8000; 
                     let adjustedPremium = currentBase * Math.pow(1 + adjRate, totalPolicyYear);
                     
@@ -675,12 +702,14 @@
                     }
                 }
 
-                // 🟢 累積表最底部總結列與「！」微型開關連動
                 tbody.innerHTML += `
-                    <tr style="background-color: #edf2f7; border-top: 3px solid #0b7285;">
-                        <td class="text-left" style="font-weight: 900; color: #0b7285;">
-                            📊 總計累額 <span class="mini-toggle-logo" id="toggle-med-cols-btn" title="切換顯示實際需繳保費">!</span>
+                    <tr style="background-color: #f8f9fa; border-top: 3px solid #0b7285; cursor: pointer;" id="toggle-med-totals-row">
+                        <td colspan="5" class="text-center" style="font-weight: 900; color: #e74c3c; padding: 12px 15px;">
+                            <span class="mini-toggle-logo" id="totals-icon" style="margin-left:0; margin-right:8px; background-color: #e74c3c;">!</span> 點擊顯示 / 隱藏實繳保費與總結算
                         </td>
+                    </tr>
+                    <tr id="med-total-values-row" style="display: none; background-color: #fffaf0;">
+                        <td class="text-left" style="font-weight: 900; color: #c0392b;">📊 總計累額</td>
                         <td class="text-right" style="color: #718096; font-weight:bold;">--</td>
                         <td class="text-right" style="color: #2980b9; font-weight: 900;">$${fmtMoney(totalAnnuitySum)}</td>
                         <td class="col-actual text-right" style="color: #c0392b; font-weight: 900;">$${fmtMoney(cumulativeActualPay)}</td>
@@ -688,17 +717,24 @@
                     </tr>
                 `;
 
-                // 🟢 精算對比卡片
                 const outcomeB = totalAnnuitySum + finalDefenseBalance - cumulativeActualPay - medPrincipal; 
                 document.getElementById('calc-outcome-a').innerText = '-$' + fmtMoney(sumAdjusted);
                 document.getElementById('calc-outcome-b').innerText = '$' + fmtMoney(outcomeB);
             }
 
-            // 事件監聽
             const savingPlanSelect = document.getElementById('saving-plan-select');
+            const medSavingPlanSelect = document.getElementById('med-saving-plan-select');
             const medicalPlanSelect = document.getElementById('med-excel-plan-dropdown');
             
-            savingPlanSelect.addEventListener('change', renderAll);
+            savingPlanSelect.addEventListener('change', function() {
+                medSavingPlanSelect.value = this.value;
+                renderAll();
+            });
+            medSavingPlanSelect.addEventListener('change', function() {
+                savingPlanSelect.value = this.value;
+                renderAll();
+            });
+            
             medicalPlanSelect.addEventListener('change', renderAll);
             
             setupCommaInput('saving-principal', function(val) {
@@ -722,7 +758,6 @@
                 renderMedicalTable();
             });
 
-            // 啟動系統
             initBankEngine();
             renderAll();
         });
