@@ -2,17 +2,21 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
+    
+    <!-- 📱 全螢幕自適應 Viewport (支援摺機與 iPad) -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="AVA 導航">
     <link rel="apple-touch-icon" href="./icon-512.png">
     <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+    
+    <!-- 🔄 防緩存 Meta -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <title>v3.2.0 | AVA 豐盛人生與財富守護導航系統</title>
+    <title>v3.3.0 | AVA 豐盛人生與財富守護導航系統</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
@@ -28,13 +32,39 @@
         }
         
         * { box-sizing: border-box; }
-        body { font-family: 'Noto Sans TC', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; padding-bottom: 50px; padding-top: 50px; overscroll-behavior-y: none; }
+        body { 
+            font-family: 'Noto Sans TC', sans-serif; 
+            background: var(--bg); 
+            color: var(--text); 
+            margin: 0; 
+            padding: 0; 
+            padding-bottom: env(safe-area-inset-bottom, 60px); 
+            padding-top: 50px; 
+            overscroll-behavior-y: none; 
+        }
 
-        .app-header { position: fixed; top: 0; left: 0; right: 0; background-color: #0A3D91; color: white; height: 50px; padding: 0 20px; padding-top: env(safe-area-inset-top, 0px); box-shadow: 0 2px 8px rgba(0,0,0,0.1); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+        /* 頂部導航列 */
+        .app-header { 
+            position: fixed; top: 0; left: 0; right: 0; 
+            background-color: #0A3D91; color: white; 
+            height: 50px; 
+            padding: 0 max(20px, env(safe-area-inset-right)) 0 max(20px, env(safe-area-inset-left)); 
+            padding-top: env(safe-area-inset-top, 0px); 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+            z-index: 1000; 
+            display: flex; align-items: center; justify-content: center; 
+        }
         .app-title { font-size: 0.95rem; font-weight: 700; letter-spacing: 0.5px; text-align: center; }
 
-        .container { max-width: 1000px; margin: 0 auto; padding: 15px; }
-        .page { display: none; background: var(--card-bg); border-radius: 16px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); margin-bottom: 20px; animation: slideUp 0.3s ease; }
+        /* 🟢 100% Fit 摺機 (Magic V5) 與 iPad 容器自適應 */
+        .container { 
+            width: 100%; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 15px max(15px, env(safe-area-inset-right)) 15px max(15px, env(safe-area-inset-left)); 
+        }
+        
+        .page { display: none; background: var(--card-bg); border-radius: 16px; padding: 22px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); margin-bottom: 20px; animation: slideUp 0.3s ease; }
         .page.active { display: block; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -43,10 +73,16 @@
         h2.fd-title { color: var(--bank); }
         h2.medical-title { color: var(--medical); }
         
-        .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        /* 🟢 摺機展開內屏 (接近正方形/iPad) Responsive Grid */
+        .input-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+            gap: 15px; 
+            margin-bottom: 20px; 
+        }
         .input-group { display: flex; flex-direction: column; }
         .input-group label { font-weight: bold; font-size: 0.9rem; margin-bottom: 8px; color: #4a5568; }
-        .input-group input, .input-group select { padding: 12px; font-size: 1.05rem; border: 2px solid #cbd5e0; border-radius: 8px; outline: none; font-weight: bold; color: var(--text); background: #fff; }
+        .input-group input, .input-group select { padding: 12px; font-size: 1.05rem; border: 2px solid #cbd5e0; border-radius: 8px; outline: none; font-weight: bold; color: var(--text); background: #fff; width: 100%; }
         .input-group input:focus, .input-group select:focus { border-color: var(--primary); }
         
         .slider-container { display: flex; align-items: center; gap: 15px; margin-top: 5px; }
@@ -59,7 +95,7 @@
         .actuarial-badge-red { background: #fde8e8; color: var(--danger); padding: 4px 12px; border-radius: 6px; font-weight: 900; font-size: 1.1rem; }
         .actuarial-badge-purple { background: #f3e8ff; color: var(--purple); padding: 4px 12px; border-radius: 6px; font-weight: 900; font-size: 1.1rem; }
 
-        .table-responsive { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); margin-top: 5px; }
+        .table-responsive { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); margin-top: 5px; -webkit-overflow-scrolling: touch; }
         table { width: 100%; border-collapse: collapse; white-space: nowrap; font-size: 0.95rem; }
         th, td { padding: 12px 15px; text-align: right; border-bottom: 1px solid var(--border); }
         th { background: #f7fafc; color: #4a5568; font-weight: 700; }
@@ -96,16 +132,25 @@
         .nav-btn.active { color: var(--primary); background: var(--primary-light); }
         .nav-btn.active[data-target="fd-page"] { color: var(--bank); background: #fff3e0; }
         .nav-btn.active[data-target="medical-page"] { color: var(--medical); background: var(--medical-light); }
+
+        /* 🟢 特別針對摺機展開內屏 (Aspect ratio 近似 1:1 或 10:9) & iPad 媒體優化 */
+        @media screen and (min-width: 600px) and (max-aspect-ratio: 4/3) {
+            .container { padding-left: 20px; padding-right: 20px; }
+            .input-grid { grid-template-columns: repeat(3, 1fr); }
+            table { font-size: 1rem; }
+            th, td { padding: 14px 18px; }
+        }
     </style>
 </head>
 <body>
 
     <header class="app-header">
-        <div class="app-title">v3.2.0 | AVA 豐盛導航系統</div>
+        <div class="app-title">v3.3.0 | AVA 豐盛導航系統</div>
     </header>
 
     <div class="container">
         
+        <!-- ================= 頁面 1: 安心悠享儲蓄 ================= -->
         <div id="saving-page" class="page active">
             <h2 class="saving-title">🌸 豐盛人生 ── 暖心現金流規劃</h2>
             
@@ -146,6 +191,7 @@
             </div>
         </div>
 
+        <!-- ================= 頁面 2: 定期存款真實效果 ================= -->
         <div id="fd-page" class="page">
             <h2 class="fd-title">🏛️ 定期存款真實效果</h2>
             
@@ -186,6 +232,7 @@
             </div>
         </div>
 
+        <!-- ================= 頁面 3: 退休醫保防線 ================= -->
         <div id="medical-page" class="page">
             <h2 class="medical-title">🩺 退休醫保防線</h2>
             
@@ -281,6 +328,7 @@
         </div>
     </div>
 
+    <!-- 底部觸發橫條 -->
     <div class="nav-toggle-bar" id="toggle-nav-bar">▲ 顯示導航選單</div>
     <div class="bottom-nav" id="popup-nav">
         <div class="nav-btn active" data-target="saving-page"><span class="icon">📊</span><span>悠享儲蓄</span></div>
@@ -599,7 +647,6 @@
                     else if (savingPlanSelect.includes("5year")) startExtractYear = 5;
                 }
 
-                // 🟢 第 5 至 20 年逐年顯示，20 年後每 5 年跳格
                 const displayYears = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100];
                 
                 let prevBalance = principal;
